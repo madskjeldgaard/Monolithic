@@ -6,7 +6,7 @@ MK_MidiScale{
         // Remove duplicates
         notes = notes.asSet.asArray;
 
-        ^notes;
+        ^notes.sort;
     }
 }
 
