@@ -1,0 +1,11 @@
+(
+  name: "mklib",
+  summary: "An assortment of extensions for SuperCollider",
+  version: "0.001",
+  schelp: "MKLib.schelp",
+  dependencies: nil,
+  license: "GNU GPL v3.0",
+  copyright: "madskjeldgaard",
+  ext_dependency: nil,
+  url: "https://github.com/madskjeldgaard/mklib"
+)

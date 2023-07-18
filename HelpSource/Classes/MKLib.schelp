@@ -1,0 +1,39 @@
+TITLE:: MKLib
+summary:: An assortment of extensions for SuperCollider
+categories:: Extensions
+related:: Classes/Quarks
+
+DESCRIPTION::
+ 
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: arga
+(describe argument here)
+
+ARGUMENT:: argb
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+INSTANCEMETHODS::
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: arga
+(describe argument here)
+
+ARGUMENT:: argb
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+EXAMPLES::
+
+code::
+// some example code
+::
