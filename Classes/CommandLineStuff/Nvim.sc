@@ -32,4 +32,19 @@ Nvim {
         var code = "vim.api.nvim_paste('%', true, 1)".format(text);
         this.send(code)
     }
+
+    *tabnew{|file|
+        var code = "vim.cmd[[tabnew " ++ file ++ "]]";
+        this.send(code.postln)
+    }
+
+    *cmd{|cmd|
+        var code = "vim.cmd[[%]]".format(cmd);
+        this.send(code)
+    }
+
+    *e{|file|
+        var code = this.cmd("e " ++ file);
+        this.send(code)
+    }
 }
