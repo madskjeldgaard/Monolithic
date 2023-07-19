@@ -74,15 +74,24 @@ MidiHarmonizer2 {
               chordNotes = this.addSixth(chordNotes, rootNote);
           },
           2, {
-              chordNotes = this.addSixth(chordNotes, rootNote);
               chordNotes = this.addSeventh(chordNotes, rootNote);
           },
           3, {
+              chordNotes = this.addNinth(chordNotes, rootNote);
+          },
+          4, {
+              chordNotes = this.addEleventh(chordNotes, rootNote);
+          },
+          5, {
+              chordNotes = this.addSixth(chordNotes, rootNote);
+              chordNotes = this.addSeventh(chordNotes, rootNote);
+          },
+          6, {
               chordNotes = this.addSixth(chordNotes, rootNote);
               chordNotes = this.addSeventh(chordNotes, rootNote);
               chordNotes = this.addNinth(chordNotes, rootNote);
           },
-          4, {
+          7, {
               chordNotes = this.addSixth(chordNotes, rootNote);
               chordNotes = this.addSeventh(chordNotes, rootNote);
               chordNotes = this.addNinth(chordNotes, rootNote);
