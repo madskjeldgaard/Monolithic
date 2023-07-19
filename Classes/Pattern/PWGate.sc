@@ -17,7 +17,7 @@ p.play;
 )
 
 */
-PWGate{
+PwGate{
 
     *new{|onWeight=0.25, onVal=1, offVal=0, repeats=inf|
         ^super.new.init(onWeight, onVal, offVal, repeats)
@@ -50,12 +50,12 @@ PWGate{
 }
 
 // Same as above but convenience class that uses 1 for onVal and Rest(1) for offVal
-PWRest{
+PwRest{
     *new{|restWeight=0.25, repeats=inf|
         ^super.new.init(restWeight, repeats)
     }
 
     init{|onWeight, repeats|
-        ^PWGate.new.init(onWeight, 1, Rest(1), repeats)
+        ^PwGate.new(onWeight, 1, Rest(1), repeats)
     }
 }
