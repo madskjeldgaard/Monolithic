@@ -14,12 +14,22 @@ MK_MidiScale{
     asMidiNotes{
         ^MK_MidiScale.new(this)
     }
+
+    // Alias for asMidiNotes
+    asMidiScale{
+        ^this.asMidiNotes
+    }
 }
 
 // Convert a number to a midi note in a scale
 +SimpleNumber{
-    snapToMidiScale{|scale|
-        var midiScale = scale.asMidiNotes();
+    // Triggers a computation of a midi scale
+    snapToScale{|scale|
+        ^this.asInteger.snapToMidiScale(scale.asMidiNotes)
+    }
+
+    // Use precomputed midi scale
+    snapToMidiScale{|midiScale|
         var midiNote = this.asInteger;
         var indexOfNote = midiScale.indexOfEqual(midiNote);
 

@@ -8,8 +8,8 @@ TODO:
 
 MidiHarmonizer2 {
     var <chordNotes;
-    var thisScale;
-    var allMidiNotesInScale, indexOfMidiNote, rootNoteOffset;
+    var thisScale, midiNotesInScale;
+    var rootNoteOffset;
 
     *new{|root=0, scale|
         ^super.new.init(root, scale);
@@ -18,17 +18,18 @@ MidiHarmonizer2 {
     init{|root, scale|
         rootNoteOffset = root;
         thisScale = scale;
+        midiNotesInScale = thisScale.asMidiNotes();
     }
 
     // Density is amount of notes in chord: 3 is a triad, anything above that will add octaves to the top/bottom
     // Chord extension is 0-4: 0 is triad, 1 is 6th, 2 is 6th and 7th, 3 is 6th, 7th and 9th, 4 is 6th, 7th, 9th and 11th
     // Inversion is 0-2: 0 is root position, 1 is first inversion, 2 is second inversion
     harmonizeMidiNote{|midiNote, density=3, extend=0, invert=0|
-      var midiNotesInScale = thisScale.asMidiNotes();
+
       var chordNotes, rootNote;
       var midiNoteIndex;
 
-      midiNote = rootNote = midiNote.snapToMidiScale(thisScale);
+      midiNote = rootNote = midiNote.snapToMidiScale(midiNotesInScale);
       midiNoteIndex = midiNotesInScale.indexOf(midiNote);
 
       // Sanitize density parameter
@@ -126,7 +127,7 @@ MidiHarmonizer2 {
     }
 
     prGetNoteXDegreesFromTriadStart{|chordRootNote, degreesFromRoot|
-        var notes = thisScale.asMidiNotes();
+        var notes = midiNotesInScale;
         var indexOfRootNote = notes.indexOf(chordRootNote);
         var note = notes.clipAt(indexOfRootNote + degreesFromRoot);
 
