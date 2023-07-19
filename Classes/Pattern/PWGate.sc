@@ -5,7 +5,7 @@ A simple Bernoulli gate that is able to take a stream of values in (as opposed t
 (
 
 p = Pbind(
-    \dur, 0.125 * PBernGate(
+    \dur, 0.125 * PWGate(
         onWeight: Pseg([0.01,1.0],16,\lin,inf),
         onVal: 1,
         offVal: Rest(1)
@@ -17,7 +17,7 @@ p.play;
 )
 
 */
-PBernGate{
+PWGate{
 
     *new{|onWeight=0.25, onVal=1, offVal=0, repeats=inf|
         ^super.new.init(onWeight, onVal, offVal, repeats)
