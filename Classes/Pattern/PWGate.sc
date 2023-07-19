@@ -48,3 +48,14 @@ PWGate{
         ^pat
     }
 }
+
+// Same as above but convenience class that uses 1 for onVal and Rest(1) for offVal
+PWRest{
+    *new{|restWeight=0.25, repeats=inf|
+        ^super.new.init(restWeight, repeats)
+    }
+
+    init{|onWeight, repeats|
+        ^PWGate.new.init(onWeight, 1, Rest(1), repeats)
+    }
+}
