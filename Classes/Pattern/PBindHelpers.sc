@@ -32,3 +32,17 @@ PChordSize{
         ^Pseq([firstThis, thenThat], 1)
     }
 }
+
+// Amplitude compensation based on a sounds frequency
+PAmpComp{
+    *new{
+        ^Pfunc({|ev|
+            var root = 40.0;
+            var freq = ev[\calculatedFreq];
+            var xa = root / freq;
+            var xb = 0.3333;
+
+            xa.pow(xb);
+        })
+    }
+}

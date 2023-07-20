@@ -56,6 +56,6 @@ PwRest{
     }
 
     init{|onWeight, repeats|
-        ^PwGate.new(onWeight, 1, Rest(1), repeats)
+        ^PwGate.new(onWeight: onWeight, onVal: Rest(1), offVal: 1, repeats: repeats)
     }
 }
