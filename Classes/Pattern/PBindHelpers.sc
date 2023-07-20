@@ -18,6 +18,22 @@ PChordSize{
     }
 }
 
+// Amplitude compensation based on a sounds frequency
+PAmpComp{
+    *new{
+        ^Pfunc({|ev|
+            ev.use{
+                var root = 40.0;
+                var freq = ~freq.value();
+                var xa = root / freq;
+                var xb = 0.3333;
+
+                xa.pow(xb)
+            }
+        })
+    }
+}
+
 // Expand a pattern depending on the number of notes in the chord being played
 + Pattern{
     clumpByChordSize{
@@ -30,19 +46,5 @@ PChordSize{
     butFirst{|firstThis|
         var thenThat = this;
         ^Pseq([firstThis, thenThat], 1)
-    }
-}
-
-// Amplitude compensation based on a sounds frequency
-PAmpComp{
-    *new{
-        ^Pfunc({|ev|
-            var root = 40.0;
-            var freq = ev[\calculatedFreq];
-            var xa = root / freq;
-            var xb = 0.3333;
-
-            xa.pow(xb);
-        })
     }
 }
