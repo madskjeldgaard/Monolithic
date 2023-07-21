@@ -34,6 +34,27 @@ PAmpComp{
     }
 }
 
+// Get the full duration of the currently playing buffer, scaled correctly by the rate
+// If you pop it in a Pbind in the \dur key, it will play the whole buffer's content, no matter the rate
+// Example:
+// Pbind(\instrument, \playbuf_1i_2o_gate, \buffer, g[1], \playrate, Pwhite(0.125, 1.0), \dur, PBufferDur()).play;
+PBufferDur{
+    *new{
+        ^Pfunc({|ev|
+            ev.use{
+                var rate = ~rate ? ~playrate ? ~playRate ? ~playbackrate ? ~playbackRate ? 1;
+                var rateArg = rate.value();
+                var buffer = (~buffer ? ~buf ? ~bufNum ? ~sampleBuffer).value();
+                var bufferDur = buffer.duration;
+                bufferDur / rateArg;
+            }
+        })
+    }
+}
+
+// Just an alias
+PBufDur : PBufferDur{}
+
 // Expand a pattern depending on the number of notes in the chord being played
 + Pattern{
     clumpByChordSize{

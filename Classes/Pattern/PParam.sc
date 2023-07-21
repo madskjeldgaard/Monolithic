@@ -99,6 +99,23 @@ Pcontrol [] {
         })
     }
 
+    // Change a pattern key in a Pbind
+    // Example:
+    /*
+
+    // Change dur of Pbind
+    Pctrldef(\yoyoy).change(\dur, 2)
+
+    // Change using past value
+    Pctrldef(\yoyoy).change(\dur, Pkey(\dur)*0.5)
+
+     */
+    change{|patternKey, newValue|
+        patternProxy.isNil.not.if({
+            patternProxy.source = Pbindf(patternProxy.source, patternKey, newValue)
+        })
+    }
+
     addParam{|key, source, spec|
         if(params[key].notNil, {
             params[key].source = source;
