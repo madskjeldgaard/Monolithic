@@ -119,7 +119,7 @@ Pcontrol [] {
     addParam{|key, source, spec|
         if(params[key].notNil, {
             params[key].source = source;
-            params[key].spec = spec;
+            params[key].spec = spec ? Spec.specs[key] ? params[key].spec ? [0.0 ,1.0, \lin].asSpec;
         }, {
             var newParam = Pparam.new(source, spec);
             params.put(key, newParam)
@@ -186,29 +186,8 @@ Pctrldef : Pcontrol{
         Class.initClassTree(Pdef);
     }
 
+    clear{
+        patternProxy.clear();
+        params.keysValuesDo{|k,v| v.clear()}
+    }
 }
-
-// Same as above but def-style
-// Pparamdef : Pparam{
-//     classvar <> all;
-//     var <key;
-
-//     *initClass {
-//         all = IdentityDictionary.new;
-//     }
-
-//     *new { arg key, item, spec;
-//         var res = this.at(key);
-//         if(res.isNil) {
-//             res = super.new(item, spec).prAdd(key);
-//         } {
-//             if(item.notNil) { res.source = item }
-//         }
-//         ^res
-//     }
-
-//     prAdd { arg argKey;
-// 		key = argKey;
-// 		all.put(argKey, this);
-// 	}
-// }
