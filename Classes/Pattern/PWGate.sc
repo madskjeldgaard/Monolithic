@@ -51,11 +51,11 @@ PwGate{
 
 // Same as above but convenience class that uses 1 for onVal and Rest(1) for offVal
 PwRest{
-    *new{|restWeight=0.25, repeats=inf|
-        ^super.new.init(restWeight, repeats)
+    *new{|restWeight=0.25, restDur=1, repeats=inf|
+        ^super.new.init(restWeight, restDur, repeats)
     }
 
-    init{|onWeight, repeats|
-        ^PwGate.new(onWeight: onWeight, onVal: Rest(1), offVal: 1, repeats: repeats)
+    init{|onWeight, restDur, repeats|
+        ^PwGate.new(onWeight: onWeight, onVal: Rest(restDur), offVal: 1, repeats: repeats)
     }
 }
