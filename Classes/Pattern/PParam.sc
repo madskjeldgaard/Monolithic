@@ -142,8 +142,6 @@ Pcontrol [] {
     addParam{|...keysSourcesSpecs|
         var clumpedArgs = keysSourcesSpecs.clump(3);
 
-        "Received: %".format(clumpedArgs).postln;
-
         clumpedArgs.do{|args|
             var key = args[0];
             var source = args[1];
