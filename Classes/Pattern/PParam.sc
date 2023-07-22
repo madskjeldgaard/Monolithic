@@ -38,7 +38,10 @@ Pcontrol [] {
 
     init{|wrapFunc|
         params = IdentityDictionary.new;
-        this.source_(wrapFunc);
+
+        if(wrapFunc.notNil, {
+            this.source_(wrapFunc)
+        });
     }
 
     at{|key|
