@@ -1,4 +1,4 @@
-// The same as a pattern proxy (pdefn) but with a spec and mapping capabilities
+// The same as a pattern proxy (pdefn) but with a spec and mapping capabilities;
 /*
 (
 p = Pparam.new(500, Spec.specs[\freq]);
@@ -54,8 +54,14 @@ Pcontrol [] {
         ^params[key];
     }
 
+    setRaw{|...keyValuePairs|
+        keyValuePairs.pairsDo{|key, value|
+            this.setRawOne(key, value)
+        }
+    }
+
     // Set a raw value of a param
-    setRaw{|key, value|
+    setRawOne{|key, value|
         if(params[key].notNil, {
             params[key].source = value;
         }, {
@@ -63,8 +69,14 @@ Pcontrol [] {
         })
     }
 
+    map{|...keyValuePairs|
+        keyValuePairs.pairsDo{|key, value|
+            this.mapOne(key, value)
+        }
+    }
+
     // Map using a control spec
-    map{|key, value|
+    mapOne{|key, value|
         if(params[key].notNil, {
             params[key].map(value);
         }, {
@@ -113,13 +125,34 @@ Pcontrol [] {
     Pctrldef(\yoyoy).change(\dur, Pkey(\dur)*0.5)
 
      */
-    change{|patternKey, newValue|
+
+     change{|...keyValuePairs|
+         keyValuePairs.pairsDo{|key, value|
+             this.changeOne(key, value)
+         }
+     }
+
+
+    changeOne{|patternKey, newValue|
         patternProxy.isNil.not.if({
             patternProxy.source = Pbindf(patternProxy.source, patternKey, newValue)
         })
     }
 
-    addParam{|key, source, spec|
+    addParam{|...keysSourcesSpecs|
+        var clumpedArgs = keysSourcesSpecs.clump(3);
+
+        "Received: %".format(clumpedArgs).postln;
+
+        clumpedArgs.do{|args|
+            var key = args[0];
+            var source = args[1];
+            var spec = args[2];
+            this.addOneParam(key, source, spec);
+        }
+    }
+
+    addOneParam{|key, source, spec|
         if(params[key].notNil, {
             params[key].source = source;
             params[key].spec = spec ? Spec.specs[key] ? params[key].spec ? [0.0 ,1.0, \lin].asSpec;
@@ -178,6 +211,11 @@ Pctrldef : Pcontrol{
     copy { |toKey|
         if(toKey.isNil or: { key == toKey }) { Error("can only copy to new key (key is %)".format(toKey)).throw };
         ^this.class.new(toKey).copyState(this)
+    }
+
+    // Convenience – copy and immediately change bits of the pattern
+    copyChange{ |toKey ... changeKeyValues|
+        this.copy(toKey).change(*changeKeyValues)
     }
 
     dup { |n = 2| ^{ this }.dup(n) } // avoid copy in Object::dup
