@@ -213,6 +213,11 @@ Pctrldef : Pcontrol{
         ^this.class.new(toKey).copyState(this)
     }
 
+    copyState { |proxy|
+        // envir = proxy.envir.copy;
+        this.patternProxy.source = proxy.patternProxy.source;
+    }
+
     // Convenience – copy and immediately change bits of the pattern
     copyChange{ |toKey ... changeKeyValues|
         this.copy(toKey).change(*changeKeyValues)
