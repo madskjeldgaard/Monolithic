@@ -13,6 +13,10 @@ Pparam : PatternProxy{
         ^super.new().source_(source).spec_(controlspec ? [0.0,1.0,\lin].asSpec)
     }
 
+    copy{
+        ^this.class.new(this.source, this.spec)
+    }
+
     // Uses a spec to map it's values (yes, I know, it overwrites original map)
     map{|value|
         this.source = spec.map(value);
@@ -214,7 +218,7 @@ Pctrldef : Pcontrol{
     copyState { |otherPctrldef|
         // envir = proxy.envir.copy;
         this.patternProxy.source = otherPctrldef.patternProxy.source;
-        this.params = otherPctrldef.params.copy;
+        this.params = otherPctrldef.params.collect{|param| param.copy};
     }
 
     // Convenience – copy and immediately change bits of the pattern
