@@ -118,6 +118,10 @@ Pcontrol [] {
         })
     }
 
+    isPlaying{
+        ^patternProxyPlayer.isPlaying;
+    }
+
     // Change a pattern key in a Pbind
     // Example:
     /*
