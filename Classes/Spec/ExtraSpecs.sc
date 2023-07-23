@@ -7,6 +7,7 @@ ExtraSpecs{
         Spec.add(\out, [0,64,\lin,1,0]);
 
         Spec.add(\root, [0,12,\lin,1,0]);
+        Spec.add(\octave, [0,10,\lin,1,0]);
         Spec.add(\degree, [-12,12,\lin,1,0]);
 
         Spec.add(\midinote, [0,127,\lin,1,0]);
@@ -19,6 +20,8 @@ ExtraSpecs{
 
         Spec.add(\uni, [0.0,1.0,\lin]);
         Spec.add(\bi, [-1.0,1.0,\lin]);
+
+        Spec.add(\uniplusone, [1.0,2.0,\lin]);
 
         Spec.add(\modAmount, [0.0,1.0,\lin]);
 
