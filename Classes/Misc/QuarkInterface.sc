@@ -15,11 +15,30 @@ QuarkInterface{
         })
     }
 
+    //------------------------------------------------------------------//
+    //                 Manage sub directories of quark                  //
+    //------------------------------------------------------------------//
+
     *filesInSubDir{|subdir|
         var path = this.pathName() +/+ subdir;
 
         ^path.files
 
+    }
+
+    *subdirFile{|subdir, filename|
+        var path = this.pathName() +/+ subdir;
+        var filepath = path +/+ filename;
+
+        ^filepath.isFile.not.if({
+            ("File not found: " + filepath.fullPath).error
+        }, {
+            filepath.fullPath
+        });
+    }
+
+    *subdirFileLoad{|subdir, filename|
+        ^this.subdirFile(subdir, filename).load
     }
 
     *loadFilesInSubDir{|subdir|
