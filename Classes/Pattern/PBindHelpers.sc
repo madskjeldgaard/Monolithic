@@ -55,6 +55,18 @@ PBufferDur{
 // Just an alias
 PBufDur : PBufferDur{}
 
+// Format a string with the number of channels in the \buffer key
+// Return as a symbol (for synthdef names)
+PBufChanFormatSym{
+    *new{|string, bufferKeyName=\buffer|
+        ^Pfunc({|ev|
+                var buffer = ev[ bufferKeyName ];
+                var channels = buffer.numChannels;
+                string.format(channels).asSymbol;
+        })
+    }
+}
+
 // Expand a pattern depending on the number of notes in the chord being played
 + Pattern{
     clumpByChordSize{
