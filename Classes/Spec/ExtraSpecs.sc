@@ -6,6 +6,13 @@ ExtraSpecs{
 
         Spec.add(\out, [0,64,\lin,1,0]);
 
+        // Envelope stuff
+        Spec.add(\attackTime, [0.0000001, 100.0, \exp]);
+        Spec.add(\decayTime, [0.0000001, 100.0, \exp]);
+        Spec.add(\sustainLevel, [0.0, 1.0, \lin]);
+        Spec.add(\releaseTime, [0.0000001, 100.0, \exp]);
+        Spec.add(\curve, [-10.0, 10.0, \lin]);
+
         Spec.add(\root, [0,12,\lin,1,0]);
         Spec.add(\octave, [0,10,\lin,1,0]);
         Spec.add(\degree, [-12,12,\lin,1,0]);
