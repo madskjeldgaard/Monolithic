@@ -7,19 +7,52 @@ p.source.postln
 )
 */
 Pparam : PatternProxy{
-    var <>spec;
+    var <spec;
 
     *new{|source, controlspec|
-        ^super.new().source_(source).spec_(controlspec ? [0.0,1.0,\lin].asSpec)
+        ^super.new().source_(source).spec_(controlspec ? [ 0.0,1.0,\lin])
     }
 
     copy{
-        ^this.class.new(this.source, this.spec)
+        ^this.class.new(this.source, this.spec).envir_(this.envir.copy)
+    }
+
+	// copy {
+	// 	^super.copy.copyState(this)
+	// }
+
+	copyState { |proxy|
+		envir = proxy.envir.copy;
+		this.source = proxy.source;
+	}
+
+    spec_{|newSpec|
+        spec = newSpec.asSpec;
     }
 
     // Uses a spec to map it's values (yes, I know, it overwrites original map)
     map{|value|
-        this.source = spec.map(value);
+        var mapped = spec.map(value);
+        var step = spec.step;
+
+        if(step.isInteger && step == 1, {
+            mapped = mapped.asInteger;
+        });
+
+        this.source = mapped;
+    }
+
+    // Convenience method to make it super easy to map a MKtl / modality toolkit element to control this parameter
+    mktlAction{|verbose=true|
+        ^{|elem|
+            var value = elem.value;
+
+            verbose.if({
+                "%: %".format(this.class.name, value).postln;
+            });
+
+            this.map(value);
+        }
     }
 
 }
@@ -28,6 +61,8 @@ Pparam : PatternProxy{
 // Encapsulates an event pattern and a range of parameters that are then made accessible to that pattern
 // All is livecodeable
 Pcontrol [] {
+    var <func;
+
     var <>params;
     var <>patternProxy, <patternProxyPlayer;
 
@@ -42,6 +77,7 @@ Pcontrol [] {
 
     init{|wrapFunc|
         params = IdentityDictionary.new;
+        // patternProxy = patternProxy ? EventPatternProxy.new;
 
         if(wrapFunc.notNil, {
             this.source_(wrapFunc)
@@ -59,9 +95,13 @@ Pcontrol [] {
     }
 
     setRaw{|...keyValuePairs|
-        keyValuePairs.pairsDo{|key, value|
-            this.setRawOne(key, value)
-        }
+        keyValuePairs.arePairs.if({
+            keyValuePairs.pairsDo{|key, value|
+                this.setRawOne(key, value)
+            }
+        }, {
+            "setRaw expects pairs".warn;
+        })
     }
 
     // Set a raw value of a param
@@ -74,9 +114,13 @@ Pcontrol [] {
     }
 
     map{|...keyValuePairs|
-        keyValuePairs.pairsDo{|key, value|
-            this.mapOne(key, value)
-        }
+        keyValuePairs.arePairs.if({
+            keyValuePairs.pairsDo{|key, value|
+                this.mapOne(key, value)
+            }
+        }, {
+            "map expects pairs".warn;
+        });
     }
 
     // Map using a control spec
@@ -88,20 +132,20 @@ Pcontrol [] {
         })
     }
 
+    source{
+        ^patternProxy.source;
+    }
+
     source_{|wrapFunc|
         if(wrapFunc.isKindOf(Function), {
             var result = wrapFunc.value(this);
+            func = wrapFunc;
+
             if(result.isKindOf(Pattern).not, {
                 "%: wrapFunc must return a pattern".format(this.class.name).error;
             }, {
-                // result = wrapFunc.value(this);
-
-                if(result.isKindOf(EventPatternProxy).not, {
-                    patternProxy = EventPatternProxy.new(result);
-                }, {
-                    patternProxy = result;
-                })
-
+                "Setting new pattern as source for %".format(this.class.name).postln;
+                patternProxy = EventPatternProxy.new(result);
             })
         }, {
             "%: wrapFunc must be a function".format(this.class.name).error;
@@ -109,12 +153,18 @@ Pcontrol [] {
     }
 
     play{
+        if(patternProxy.isNil, {
+            "%: no pattern to play".format(this.class.name).warn;
+        });
+
         patternProxyPlayer = patternProxy.play;
     }
 
     stop{
         patternProxyPlayer.isNil.not.if({
             patternProxyPlayer.stop;
+        }, {
+            "%: no pattern to stop".format(this.class.name).warn;
         })
     }
 
@@ -135,9 +185,13 @@ Pcontrol [] {
      */
 
      change{|...keyValuePairs|
-         keyValuePairs.pairsDo{|key, value|
-             this.changeOne(key, value)
-         }
+         keyValuePairs.arePairs.if({
+             keyValuePairs.pairsDo{|key, value|
+                 this.changeOne(key, value)
+             }
+         }, {
+             "change expects pairs".warn;
+         })
      }
 
 
@@ -148,14 +202,18 @@ Pcontrol [] {
     }
 
     addParam{|...keysSourcesSpecs|
-        var clumpedArgs = keysSourcesSpecs.clump(3);
+        keysSourcesSpecs.areTriplets.if({
+            var clumpedArgs = keysSourcesSpecs.clump(3);
 
-        clumpedArgs.do{|args|
-            var key = args[0];
-            var source = args[1];
-            var spec = args[2];
-            this.addOneParam(key, source, spec);
-        }
+            clumpedArgs.do{|args|
+                var key = args[0];
+                var source = args[1];
+                var spec = args[2];
+                this.addOneParam(key, source, spec);
+            }
+        }, {
+            "addParam expects triplets: [key, source, spec]".warn;
+        })
     }
 
     addOneParam{|key, source, spec|
@@ -166,6 +224,28 @@ Pcontrol [] {
             var newParam = Pparam.new(source, spec);
             params.put(key, newParam)
         })
+    }
+
+    // A convenience for creating a modality callback that will toggle this pattern on/off
+    mktlToggleAction{|verbose=true|
+        ^{|elem|
+            verbose.if({
+                "%: %".format(this.class.name, elem.value).postln;
+            });
+
+            if(elem.value == 1, {
+                verbose.if({
+                    "playing".postln
+                });
+
+                this.play;
+            }, {
+                verbose.if({
+                    "stopping".postln
+                });
+                this.stop;
+            })
+        }
     }
 }
 
@@ -216,18 +296,39 @@ Pctrldef : Pcontrol{
 
     copy { |toKey|
         if(toKey.isNil or: { key == toKey }) { Error("can only copy to new key (key is %)".format(toKey)).throw };
+        "Copying from key % to %".format(key, toKey).postln;
         ^this.class.new(toKey).copyState(this)
     }
 
     copyState { |otherPctrldef|
-        // envir = proxy.envir.copy;
-        this.patternProxy.source = otherPctrldef.patternProxy.source;
-        this.params = otherPctrldef.params.collect{|param| param.copy};
+        if(otherPctrldef.patternProxy.source.isNil, {
+            "%: no pattern to copy".format(this.class.name).warn;
+        });
+
+        // this.patternProxy.isNil.if({
+        //     this.patternProxy = EventPatternProxy.new(otherPctrldef.patternProxy.source.copy());
+        // }, {
+        //     this.patternProxy.source = otherPctrldef.patternProxy.source;
+        // });
+
+
+        // this.patternProxy.envir = otherPctrldef.patternProxy.envir.copy;
+
+        this.params = otherPctrldef.params.collect{|param| param.copy()};
+        this.source_(otherPctrldef.func);
     }
 
     // Convenience – copy and immediately change bits of the pattern
     copyChange{ |toKey ... changeKeyValues|
-        this.copy(toKey).change(*changeKeyValues)
+        var newPctrlDef = this.copy(toKey);
+
+        if(changeKeyValues.arePairs, {
+            newPctrlDef.change(*changeKeyValues)
+        }, {
+            "can't set changekeyvalues if not pairs".error;
+        });
+
+        ^newPctrlDef
     }
 
     dup { |n = 2| ^{ this }.dup(n) } // avoid copy in Object::dup
