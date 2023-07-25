@@ -1,43 +1,34 @@
 (
+Pctrldef(\yo, {|ctrl|
+
+    // The pattern to be returned/played
+    Pbind(
+        \dur, Pwhite(1, 5, inf) * 0.125,
+        \scale, ctrl[\scale].trace,
+        \degree,ctrl[\degree] + Pn(Pseries(rrand(0, 10), #[-1, 1].choose, rrand(4, 10))),
+        \amp, ctrl[\amp],
+    )
+
+})
+.addParam(
+    // Name, default val, spec
+    \amp, 0.25, \amp,
+    \degree, 0, [0,10].asSpec,
+    // Name of param, default val, array of choices
+    \scale, Scale.minor, [Scale.minor, Scale.major, Scale.whole, Scale.majorPentatonic, Scale.minorPentatonic]
+);
+
 s.waitForBoot{
-    Pctrldef(\yo, {|ctrl|
-
-        // The pattern to be returned/played
-        Pspawn(
-            Pbind(
-                \method,ctrl[\method].trace,
-                \delta, Pwhite(1, 5, inf) * 0.125,
-                \pattern, Pfunc {|ev|
-                    var delta = ev[\delta] ? 1;
-                    Pbind(
-                        \degree,ctrl[\degree] + Pseries(rrand(0, 10), #[-1, 1].choose, rrand(4, 10)),
-                        \amp, ctrl[\amp],
-                        \dur,delta/10
-                    )},
-                )
-            )
-
-        })
-        .addParam(
-            // Name, default val, spec
-            \amp, 0.25, \amp,
-            \degree, 0, [0,10].asSpec,
-            // Name of param, default val, array of choices
-            \method, \seq, [\wait, \seq, \par]
-        );
-
-        s.sync;
-        Pctrldef(\yo).play;
-
-    };
-
+    s.sync;
+    Pctrldef(\yo).play;
+};
 )
 
 
-// change method
-Pctrldef(\yo).map(\method, 0.0);
-Pctrldef(\yo).map(\method, 0.5);
-Pctrldef(\yo).map(\method, 1.0);
+// change scale
+Pctrldef(\yo).map(\scale, 0.0);
+Pctrldef(\yo).map(\scale, 0.5);
+Pctrldef(\yo).map(\scale, 1.0);
 
 // Set amp
 Pctrldef(\yo).map(\amp, 0.35);
