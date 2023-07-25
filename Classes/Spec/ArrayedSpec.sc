@@ -18,6 +18,10 @@ ArrayedSpec{
         ^thisArray[index]
     }
 
+    asSpec{
+        ^this
+    }
+
     array{
         ^thisArray
     }
