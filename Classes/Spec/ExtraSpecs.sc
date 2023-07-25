@@ -6,6 +6,8 @@ ExtraSpecs{
 
         Spec.add(\out, [0,64,\lin,1,0]);
 
+        Spec.add(\time, [0.000000001,100000.0,\lin,0,1]);
+
         // Envelope stuff
         Spec.add(\attackTime, [0.0000001, 100.0, \exp]);
         Spec.add(\decayTime, [0.0000001, 100.0, \exp]);
