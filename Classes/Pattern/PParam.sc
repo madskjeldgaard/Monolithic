@@ -5,6 +5,19 @@ p = Pparam.new(500, Spec.specs[\freq]);
 p.map(0.2);
 p.source.postln
 )
+
+// Using arrayed spec !
+(
+Pctrldef(\yo)
+.addParam(
+    \myArrayParam, \hey, [\hey, \yo, \ho]
+);
+
+Pctrldef(\yo)[\myArrayParam].source.postln;
+Pctrldef(\yo).map(\myArrayParam, 0.5);
+Pctrldef(\yo)[\myArrayParam].source.postln;
+)
+
 */
 Pparam : PatternProxy{
     var <spec;
@@ -14,7 +27,7 @@ Pparam : PatternProxy{
     }
 
     copy{
-        ^this.class.new(this.source, this.spec).envir_(this.envir.copy)
+        ^this.class.new(this.source, this.spec).envir_(this.envir.copy).spec_(this.spec)
     }
 
 	// copy {
@@ -32,14 +45,18 @@ Pparam : PatternProxy{
 
     // Uses a spec to map it's values (yes, I know, it overwrites original map)
     map{|value|
-        var mapped = spec.map(value);
-        var step = spec.step;
+        if(spec.notNil, {
 
-        if(step.isInteger && step == 1, {
-            mapped = mapped.asInteger;
-        });
+            var mapped = spec.map(value);
+            var step = spec.step;
 
-        this.source = mapped;
+            this.source = mapped;
+
+        }, {
+            "No spec found for %. Using unipolar".format(this.class.name).warn;
+
+            this.source = \uni.asSpec.map(value);
+        })
     }
 
     // Convenience method to make it super easy to map a MKtl / modality toolkit element to control this parameter
@@ -209,6 +226,11 @@ Pcontrol [] {
                 var key = args[0];
                 var source = args[1];
                 var spec = args[2];
+
+                spec.isKindOf(Array).if({
+                    spec = ArrayedSpec.new(array:spec, default:0)
+                });
+
                 this.addOneParam(key, source, spec);
             }
         }, {
