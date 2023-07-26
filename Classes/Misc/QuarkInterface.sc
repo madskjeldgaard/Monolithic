@@ -48,4 +48,43 @@ QuarkInterface{
             file.fullPath.load
         }
     }
+
+    //------------------------------------------------------------------//
+    //                            Help files                            //
+    //------------------------------------------------------------------//
+
+    *generateUndocumentedHelpFiles{
+        var quarkInterface = this;
+
+        // FIXME: This is super slow
+        var allUndocumented = SCDoc.documents.select{|doc|
+            doc.isUndocumentedClass()
+        };
+
+        // Select only ones in this quark/package
+        allUndocumented = allUndocumented.select{|doc|
+            var thisClass = doc.klass;
+            quarkInterface.allClasses.indexOfEqual(thisClass).notNil;
+        };
+
+        // Generate help files
+        allUndocumented.do{|doc|
+            var path = this.pathName +/+ "HelpSource" +/+ "Classes";
+            var fullPathOutDir = path.fullPath;
+            var fullPathFile = (path +/+ doc.klass).fullPath ++ ".schelp";
+            var text, file;
+            "Generating help file for %".format(doc.klass).postln;
+            "Path: %".format(fullPathOutDir).postln;
+            "File: %".format(fullPathFile).postln;
+
+            if(path.isFolder.not, {File.mkdir(fullPathOutDir)});
+
+            doc = SCDocEntry.newUndocClass(doc.klass);
+            text = SCDoc.makeClassTemplate(doc);
+            file = File.open(pathName:fullPathFile, mode:"w");
+            file.write(text);
+            file.close;
+        };
+
+    }
 }
