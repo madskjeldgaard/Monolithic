@@ -161,7 +161,11 @@ Pcontrol [] {
             if(result.isKindOf(Pattern).not, {
                 "%: wrapFunc must return a pattern".format(this.class.name).error;
             }, {
-                patternProxy = EventPatternProxy.new(result);
+                patternProxy.isNil.if({
+                    patternProxy = EventPatternProxy.new;
+                });
+
+                patternProxy.source = result;
             })
         }, {
             "%: wrapFunc must be a function".format(this.class.name).error;
