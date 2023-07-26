@@ -1,7 +1,10 @@
 // Contains convenience functions for quark main classes
 // Some stuff I am sick of writing again and again
 QuarkInterface{
-    classvar <packageName;
+
+    *packageName{
+        ^this.subclassResponsibility(thisMethod);
+    }
 
     *allClasses{
         ^Quarks.classesInPackage(this.packageName)
