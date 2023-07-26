@@ -23,6 +23,7 @@ ExtraSpecs{
         Spec.add(\midivel, [0,127,\lin,1,0]);
         Spec.add(\midicc, [0,127,\lin,1,0]);
         Spec.add(\midipgm, [0,127,\lin,1,0]);
+        Spec.add(\midichan, [0,15,\lin,1,0]);
 
         Spec.add(\cutoff, [20.0,20000.0,\exp]);
         Spec.add(\lfo, [0.0000001,100.0,\exp]);

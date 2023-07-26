@@ -168,12 +168,12 @@ Pcontrol [] {
         })
     }
 
-    play{
+    play{|clock, quant, doReset=false|
         if(patternProxy.isNil, {
             "%: no pattern to play".format(this.class.name).warn;
         });
 
-        patternProxyPlayer = patternProxy.play;
+        patternProxyPlayer = patternProxy.play(argClock: clock, quant: quant, doReset: doReset);
     }
 
     stop{

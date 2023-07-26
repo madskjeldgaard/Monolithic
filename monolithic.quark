@@ -1,11 +1,11 @@
 (
-  name: "mklib",
+  name: "Monolithic",
   summary: "An assortment of extensions for SuperCollider",
   version: "0.001",
-  schelp: "MKLib.schelp",
+  schelp: "Monolithic.schelp",
   dependencies: ["https://github.com/madskjeldgaard/PolyBuf", "https://github.com/dathinaios/CuePlayer"],
   license: "GNU GPL v3.0",
   copyright: "madskjeldgaard",
   ext_dependency: nil,
-  url: "https://github.com/madskjeldgaard/mklib"
+  url: "https://github.com/madskjeldgaard/Monolithic"
 )
