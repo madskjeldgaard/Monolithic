@@ -1,0 +1,78 @@
+TITLE:: QuarkInterface
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: allClasses
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: filesInSubDir
+(describe method here)
+
+ARGUMENT:: subdir
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: loadFilesInSubDir
+(describe method here)
+
+ARGUMENT:: subdir
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: subdirFile
+(describe method here)
+
+ARGUMENT:: subdir
+(describe argument here)
+
+ARGUMENT:: filename
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: generateUndocumentedHelpFiles
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pathName
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: packageName
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: subdirFileLoad
+(describe method here)
+
+ARGUMENT:: subdir
+(describe argument here)
+
+ARGUMENT:: filename
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

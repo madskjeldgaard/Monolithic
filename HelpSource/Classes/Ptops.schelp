@@ -1,4 +1,4 @@
-TITLE:: Monolithic
+TITLE:: Ptops
 summary:: (put short description here)
 categories:: Monolithic
 related:: Classes/Monolithic
@@ -9,8 +9,20 @@ DESCRIPTION::
 
 CLASSMETHODS::
 
-METHOD:: packageName
+METHOD:: weaveFunc
 (describe method here)
+
+ARGUMENT:: eventIndex
+(describe argument here)
+
+ARGUMENT:: paramIndex
+(describe argument here)
+
+ARGUMENT:: weaveSpeed
+(describe argument here)
+
+ARGUMENT:: numEventPatterns
+(describe argument here)
 
 returns:: (describe returnvalue here)
 

@@ -1,0 +1,168 @@
+TITLE:: EasyNRT
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: numChannels
+(describe argument here)
+
+ARGUMENT:: sampleFormat
+(describe argument here)
+
+ARGUMENT:: header
+(describe argument here)
+
+ARGUMENT:: samplerate
+(describe argument here)
+
+ARGUMENT:: duration
+(describe argument here)
+
+ARGUMENT:: outfile
+(describe argument here)
+
+ARGUMENT:: options
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: lfoSynthDefs
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: defaultOptions
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: numChannels
+(describe argument here)
+
+ARGUMENT:: sampleFormat
+(describe argument here)
+
+ARGUMENT:: header
+(describe argument here)
+
+ARGUMENT:: samplerate
+(describe argument here)
+
+ARGUMENT:: duration
+(describe argument here)
+
+ARGUMENT:: outfile
+(describe argument here)
+
+ARGUMENT:: options
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addDefaultLFOS
+(describe method here)
+
+ARGUMENT:: score
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: lfoNames
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: path
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: headerFormat
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: server
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: serverOptions
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: play
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: nrtduration
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: score
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: nrtserver
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: sampleRate
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: numChans
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: makeServer
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: populateScore
+(describe method here)
+
+ARGUMENT::  ... synthSequence
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: format
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: recordNRT
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

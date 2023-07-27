@@ -1,4 +1,4 @@
-TITLE:: Monolithic
+TITLE:: PBufDur
 summary:: (put short description here)
 categories:: Monolithic
 related:: Classes/Monolithic
@@ -8,11 +8,6 @@ DESCRIPTION::
 
 
 CLASSMETHODS::
-
-METHOD:: packageName
-(describe method here)
-
-returns:: (describe returnvalue here)
 
 
 INSTANCEMETHODS::

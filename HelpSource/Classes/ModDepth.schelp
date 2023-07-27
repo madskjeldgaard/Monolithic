@@ -1,4 +1,4 @@
-TITLE:: Monolithic
+TITLE:: ModDepth
 summary:: (put short description here)
 categories:: Monolithic
 related:: Classes/Monolithic
@@ -9,8 +9,17 @@ DESCRIPTION::
 
 CLASSMETHODS::
 
-METHOD:: packageName
+METHOD:: new
 (describe method here)
+
+ARGUMENT:: value
+(describe argument here)
+
+ARGUMENT:: modulator
+(describe argument here)
+
+ARGUMENT:: modDepth
+(describe argument here)
 
 returns:: (describe returnvalue here)
 

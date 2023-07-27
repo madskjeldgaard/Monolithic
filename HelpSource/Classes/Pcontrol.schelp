@@ -1,0 +1,191 @@
+TITLE:: Pcontrol
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: wrapFunc
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: map
+(describe method here)
+
+ARGUMENT::  ... keyValuePairs
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mktlToggleAction
+(describe method here)
+
+ARGUMENT:: verbose
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: patternProxyPlayer
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setRawOne
+(describe method here)
+
+ARGUMENT:: key
+(describe argument here)
+
+ARGUMENT:: value
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addParam
+(describe method here)
+
+ARGUMENT::  ... keysSourcesSpecs
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: source
+(describe method here)
+
+ARGUMENT:: wrapFunc
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: change
+(describe method here)
+
+ARGUMENT::  ... keyValuePairs
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setRaw
+(describe method here)
+
+ARGUMENT::  ... keyValuePairs
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: isPlaying
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: params
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: wrapFunc
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: play
+(describe method here)
+
+ARGUMENT:: clock
+(describe argument here)
+
+ARGUMENT:: quant
+(describe argument here)
+
+ARGUMENT:: doReset
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mapOne
+(describe method here)
+
+ARGUMENT:: key
+(describe argument here)
+
+ARGUMENT:: value
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: patternProxy
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: at
+(describe method here)
+
+ARGUMENT:: key
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: changeOne
+(describe method here)
+
+ARGUMENT:: patternKey
+(describe argument here)
+
+ARGUMENT:: newValue
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: quant
+(describe method here)
+
+ARGUMENT:: newQuant
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: func
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: stop
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addOneParam
+(describe method here)
+
+ARGUMENT:: key
+(describe argument here)
+
+ARGUMENT:: source
+(describe argument here)
+
+ARGUMENT:: spec
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

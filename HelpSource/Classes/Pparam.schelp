@@ -1,0 +1,68 @@
+TITLE:: Pparam
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: source
+(describe argument here)
+
+ARGUMENT:: controlspec
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: copyState
+(describe method here)
+
+ARGUMENT:: proxy
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: map
+(describe method here)
+
+ARGUMENT:: value
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mktlAction
+(describe method here)
+
+ARGUMENT:: verbose
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: copy
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: spec
+(describe method here)
+
+ARGUMENT:: newSpec
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

@@ -1,0 +1,54 @@
+TITLE:: Pweave
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: eventPatterns
+(describe argument here)
+
+ARGUMENT:: weaveSpeed
+(describe argument here)
+
+ARGUMENT:: overWrite
+(describe argument here)
+
+ARGUMENT::  ... params
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: weaveFunc
+(describe method here)
+
+ARGUMENT:: eventIndex
+(describe argument here)
+
+ARGUMENT:: paramIndex
+(describe argument here)
+
+ARGUMENT:: weaveSpeed
+(describe argument here)
+
+ARGUMENT:: numEventPatterns
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

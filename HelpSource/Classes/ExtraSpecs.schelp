@@ -1,4 +1,4 @@
-TITLE:: Monolithic
+TITLE:: ExtraSpecs
 summary:: (put short description here)
 categories:: Monolithic
 related:: Classes/Monolithic
@@ -9,7 +9,7 @@ DESCRIPTION::
 
 CLASSMETHODS::
 
-METHOD:: packageName
+METHOD:: initClass
 (describe method here)
 
 returns:: (describe returnvalue here)

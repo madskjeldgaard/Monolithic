@@ -1,0 +1,133 @@
+TITLE:: MidiHarmonizer2
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: root
+(describe argument here)
+
+ARGUMENT:: scale
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: prGetNoteXDegreesFromTriadStart
+(describe method here)
+
+ARGUMENT:: chordRootNote
+(describe argument here)
+
+ARGUMENT:: degreesFromRoot
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: chordNotes
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addSeventh
+(describe method here)
+
+ARGUMENT:: chordNotes
+(describe argument here)
+
+ARGUMENT:: rootNote
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: root
+(describe argument here)
+
+ARGUMENT:: scale
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addSixth
+(describe method here)
+
+ARGUMENT:: chordNotes
+(describe argument here)
+
+ARGUMENT:: rootNote
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addNinth
+(describe method here)
+
+ARGUMENT:: chordNotes
+(describe argument here)
+
+ARGUMENT:: rootNote
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: addEleventh
+(describe method here)
+
+ARGUMENT:: chordNotes
+(describe argument here)
+
+ARGUMENT:: rootNote
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: octaved
+(describe method here)
+
+ARGUMENT:: midiNoteIn
+(describe argument here)
+
+ARGUMENT:: above
+(describe argument here)
+
+ARGUMENT:: numOctaves
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: harmonizeMidiNote
+(describe method here)
+
+ARGUMENT:: midiNote
+(describe argument here)
+
+ARGUMENT:: density
+(describe argument here)
+
+ARGUMENT:: extend
+(describe argument here)
+
+ARGUMENT:: invert
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

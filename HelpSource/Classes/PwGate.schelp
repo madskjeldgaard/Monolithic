@@ -1,0 +1,54 @@
+TITLE:: PwGate
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: onWeight
+(describe argument here)
+
+ARGUMENT:: onVal
+(describe argument here)
+
+ARGUMENT:: offVal
+(describe argument here)
+
+ARGUMENT:: repeats
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: onWeight
+(describe argument here)
+
+ARGUMENT:: onVal
+(describe argument here)
+
+ARGUMENT:: offVal
+(describe argument here)
+
+ARGUMENT:: repeats
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

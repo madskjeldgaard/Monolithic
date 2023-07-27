@@ -1,0 +1,73 @@
+TITLE:: FZFdef
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+METHOD:: prCallNeoVim
+(describe method here)
+
+ARGUMENT:: call
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: getFinder
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: finderName
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: callFinder
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setFinder
+(describe method here)
+
+ARGUMENT:: itemsCode
+(describe argument here)
+
+ARGUMENT:: callbackFunc
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: callback
+(describe method here)
+
+ARGUMENT:: result
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: set
+(describe method here)
+
+ARGUMENT:: itemsCode
+(describe argument here)
+
+ARGUMENT:: callbackFunc
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

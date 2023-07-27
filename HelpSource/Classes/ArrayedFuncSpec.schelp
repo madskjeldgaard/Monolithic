@@ -1,4 +1,4 @@
-TITLE:: Monolithic
+TITLE:: ArrayedFuncSpec
 summary:: (put short description here)
 categories:: Monolithic
 related:: Classes/Monolithic
@@ -9,13 +9,21 @@ DESCRIPTION::
 
 CLASSMETHODS::
 
-METHOD:: packageName
+
+INSTANCEMETHODS::
+
+METHOD:: map
 (describe method here)
+
+ARGUMENT:: value
+(describe argument here)
 
 returns:: (describe returnvalue here)
 
+METHOD:: lastIndex
+(describe method here)
 
-INSTANCEMETHODS::
+returns:: (describe returnvalue here)
 
 
 EXAMPLES::

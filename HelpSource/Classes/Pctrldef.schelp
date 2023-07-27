@@ -1,0 +1,107 @@
+TITLE:: Pctrldef
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: hasGlobalDictionary
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: all
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: initClass
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: at
+(describe method here)
+
+ARGUMENT:: key
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: key
+(describe argument here)
+
+ARGUMENT:: item
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: dup
+(describe method here)
+
+ARGUMENT:: n
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: prAdd
+(describe method here)
+
+ARGUMENT:: argKey
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: key
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: copy
+(describe method here)
+
+ARGUMENT:: toKey
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: copyChange
+(describe method here)
+
+ARGUMENT:: toKey
+(describe argument here)
+
+ARGUMENT::  ... changeKeyValues
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: copyState
+(describe method here)
+
+ARGUMENT:: otherPctrldef
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: clear
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

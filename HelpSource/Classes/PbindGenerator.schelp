@@ -1,0 +1,56 @@
+TITLE:: PbindGenerator
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: synthDefExists
+(describe method here)
+
+ARGUMENT:: synthDefName
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: postPatFor
+(describe method here)
+
+ARGUMENT:: synthDef
+(describe argument here)
+
+ARGUMENT:: wrapInPdef
+(describe argument here)
+
+ARGUMENT:: randomize
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: synthDefName
+(describe argument here)
+
+ARGUMENT:: wrapInPdef
+(describe argument here)
+
+ARGUMENT:: randomize
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

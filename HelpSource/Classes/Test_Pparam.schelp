@@ -1,4 +1,4 @@
-TITLE:: Monolithic
+TITLE:: Test_Pparam
 summary:: (put short description here)
 categories:: Monolithic
 related:: Classes/Monolithic
@@ -9,13 +9,23 @@ DESCRIPTION::
 
 CLASSMETHODS::
 
-METHOD:: packageName
+
+INSTANCEMETHODS::
+
+METHOD:: setUp
 (describe method here)
 
 returns:: (describe returnvalue here)
 
+METHOD:: tearDown
+(describe method here)
 
-INSTANCEMETHODS::
+returns:: (describe returnvalue here)
+
+METHOD:: test_copypparam
+(describe method here)
+
+returns:: (describe returnvalue here)
 
 
 EXAMPLES::

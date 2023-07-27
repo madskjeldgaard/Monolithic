@@ -1,0 +1,98 @@
+TITLE:: ArrayedSpec
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: array
+(describe argument here)
+
+ARGUMENT:: default
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: thisArray
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: array
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: asSpec
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: step
+(describe method here)
+
+ARGUMENT:: newStep
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: minval
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: warp
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: default
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: array
+(describe argument here)
+
+ARGUMENT:: default
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: map
+(describe method here)
+
+ARGUMENT:: value
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: maxval
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: indexSpec
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

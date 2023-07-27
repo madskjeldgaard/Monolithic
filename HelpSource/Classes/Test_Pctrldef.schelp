@@ -1,0 +1,50 @@
+TITLE:: Test_Pctrldef
+summary:: (put short description here)
+categories:: Monolithic
+related:: Classes/Monolithic
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+METHOD:: setUp
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: tearDown
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: test_paramMappingMulti
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: test_newctrldef
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: test_paramMapping
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: test_copyctrldef
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

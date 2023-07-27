@@ -1,4 +1,4 @@
-TITLE:: Monolithic
+TITLE:: Pcosine
 summary:: (put short description here)
 categories:: Monolithic
 related:: Classes/Monolithic
@@ -9,8 +9,14 @@ DESCRIPTION::
 
 CLASSMETHODS::
 
-METHOD:: packageName
+METHOD:: new
 (describe method here)
+
+ARGUMENT:: freq
+(describe argument here)
+
+ARGUMENT:: phase
+(describe argument here)
 
 returns:: (describe returnvalue here)
 
