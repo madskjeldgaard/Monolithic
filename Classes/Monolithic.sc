@@ -1,1 +1,5 @@
-Monolithic : QuarkInterface {}
+Monolithic : QuarkInterface {
+    packageName{
+        ^Monolithic
+    }
+}
