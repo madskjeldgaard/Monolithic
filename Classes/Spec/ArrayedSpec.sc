@@ -12,10 +12,18 @@ ArrayedSpec{
         indexSpec = ControlSpec.new(minval:0, maxval:array.size-1, warp:\lin, step:1, default:default);
     }
 
+    // Take a normalized input 0.0-1.0 and return a value from the array
     map{|value|
         var index = indexSpec.map(value).asInteger;
 
         ^thisArray[index]
+    }
+
+    // Take a value from an array and return a normalized value 0.0-1.0 depending on it's index in the array
+    unmap{|value|
+        var index = thisArray.indexOfEqual(value);
+
+        ^indexSpec.unmap(index)
     }
 
     asSpec{
