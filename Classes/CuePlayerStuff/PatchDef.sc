@@ -1,9 +1,9 @@
 /*
 
-A simple def-style way to organize a scene for a performance. I find I often need this to prepare resources, then when a cue hits, .play a scene, and when it is done .stop it and at the end of a performance clean up
+A simple def-style way to organize a scene or a patch for a performance. I find I often need this to prepare resources, then when a cue hits, .play a scene, and when it is done .stop it and at the end of a performance clean up
 
 (
-SceneDef(\scene1,
+PatchDef(\scene1,
     configFunc: {|scene ... moreArgs|
         scene.data[\somedata] = moreArgs[0];
         // Do controller setup, sample loading, etc here
@@ -23,15 +23,15 @@ SceneDef(\scene1,
     },
 );
 
-SceneDef(\scene1).configure(30)
-SceneDef(\scene1).play;
+PatchDef(\scene1).configure(30)
+PatchDef(\scene1).play;
 )
 
 A bigger example with cue player
 (
 ~cueplayer = CuePlayer.new();
 
-SceneDef(\scene1,
+PatchDef(\scene1,
     configFunc: {|scene ... moreArgs|
         scene.data[\somedata] = 30;
         // Do controller setup, sample loading, etc here
@@ -53,8 +53,7 @@ SceneDef(\scene1,
 .configure()
 .addToCuePlayer(~cueplayer);
 
-
-SceneDef(\scene2,
+PatchDef(\scene2,
     configFunc: {|scene ... moreArgs|
         scene.data[\somedata] = 30;
         // Do controller setup, sample loading, etc here
@@ -80,7 +79,7 @@ SceneDef(\scene2,
 )
 
 */
-SceneDef{
+PatchDef{
     var <key, <>configFunc, <>playFunc, <>stopFunc, <>cleanupFunc;
     var <>data;
 
@@ -106,6 +105,22 @@ SceneDef{
 
     *at{|key|
         ^all[key]
+    }
+
+    at{|key|
+        ^data[key]
+    }
+
+    put{|...keysValues|
+        keysValues.asPairs.pairsDo{|key, value|
+            data.put(key, value);
+        };
+    }
+
+    set{|...keysValues|
+        keysValues.asPairs.pairsDo{|key, value|
+            data.put(key, value);
+        };
     }
 
     *initClass {
