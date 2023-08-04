@@ -1,5 +1,9 @@
 /*
 
+
+TODO:
+- Add specs and spec-mapping
+
 A simple def-style way to organize a scene or a patch for a performance. I find I often need this to prepare resources, then when a cue hits, .play a scene, and when it is done .stop it and at the end of a performance clean up
 
 (
@@ -91,6 +95,7 @@ PatchDef{
     *new{ arg key, configFunc, playFunc, stopFunc, cleanupFunc;
         var res = this.at(key);
         if(res.isNil) {
+            "Creating new PatchDef: %".format(key).postln;
             res = super.new().prAdd(key).configFunc_(configFunc).playFunc_(playFunc).stopFunc_(stopFunc).cleanupFunc_(cleanupFunc);
             res.data = IdentityDictionary.new;
         } {
@@ -190,4 +195,24 @@ PatchDef{
     putInCuePlayer{ arg cuePlayer, index;
         cuePlayer.put(index, this.asCueInfo);
     }
+
+    // FIXME: doesnt work
+    // copy{|toKey|
+    //     if(toKey.isNil or: { key == toKey }) { Error("can only copy to new key (key is %)".format(toKey)).throw };
+    //     ^this.class.new(toKey, configFunc: configFunc, playFunc: playFunc, stopFunc: stopFunc, cleanupFunc: cleanupFunc).data_(data);
+    // }
 }
+
+// SceneDef : PatchDef{
+//     classvar <all;
+//     *initClass {
+//         this.all = IdentityDictionary.new;
+//     }
+// }
+
+// PerformanceDef : PatchDef{
+//     classvar <all;
+// *initClass {
+//                    all = IdentityDictionary.new;
+//                }
+// }

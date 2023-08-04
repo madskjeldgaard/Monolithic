@@ -1,0 +1,5 @@
++ Object{
+    isArrayedSpec{
+        ^false
+    }
+}

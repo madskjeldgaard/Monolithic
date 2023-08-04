@@ -45,7 +45,6 @@ Pctrldef : Pcontrol{
 
     copy { |toKey|
         if(toKey.isNil or: { key == toKey }) { Error("can only copy to new key (key is %)".format(toKey)).throw };
-        "Copying from key % to %".format(key, toKey).postln;
         ^this.class.new(toKey).copyState(this)
     }
 

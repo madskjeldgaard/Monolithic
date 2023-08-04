@@ -43,6 +43,19 @@ Pparam : PatternProxy{
         spec = newSpec.asSpec;
     }
 
+    // Set without spec
+    setRaw{|value|
+        this.source = value;
+    }
+
+    set{|value|
+        this.setRaw(value);
+    }
+
+    value{
+        ^this.source;
+    }
+
     // Uses a spec to map it's values (yes, I know, it overwrites original map)
     map{|value|
         if(spec.notNil, {
