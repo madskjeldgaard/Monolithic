@@ -7,6 +7,8 @@ Pcontrol [] {
     var <>params;
     var <>patternProxy, <patternProxyPlayer;
 
+    var toggleState = true;
+
     *new{ arg wrapFunc;
         ^super.new().init(wrapFunc);
     }
@@ -112,6 +114,14 @@ Pcontrol [] {
         })
     }
 
+    toggle{
+        if(this.isPlaying, {
+            this.stop;
+        }, {
+            this.play;
+        })
+    }
+
     isPlaying{
         ^patternProxyPlayer.isPlaying;
     }
@@ -176,23 +186,40 @@ Pcontrol [] {
     }
 
     // A convenience for creating a modality callback that will toggle this pattern on/off
-    mktlToggleAction{|verbose=true|
+    mktlToggleAction{|verbose=true, isMomentary=false|
         ^{|elem|
             verbose.if({
                 "%: %".format(this.class.name, elem.value).postln;
             });
 
-            if(elem.value == 1, {
-                verbose.if({
-                    "playing".postln
-                });
+            isMomentary.if({
+                // Uses a toggle state to fake a latch
+                if(elem.value == 1 && toggleState, {
+                    "Toggling pattern".postln;
+                    this.toggle();
 
-                this.play;
+                    // Flip the state
+                    toggleState = toggleState.not;
+                }, {
+                    // Reset the state
+                    toggleState = toggleState.not;
+                })
             }, {
-                verbose.if({
-                    "stopping".postln
-                });
-                this.stop;
+                // Latching
+                if(elem.value == 1, {
+
+                    if(this.isPlaying.not, {
+                        verbose.if({
+                            "playing".postln
+                        });
+                        this.play;
+                    }, {
+                        verbose.if({
+                            "already playing.stopping".postln
+                        });
+                        this.stop;
+                    });
+                })
             })
         }
     }
