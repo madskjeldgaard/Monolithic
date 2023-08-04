@@ -1,14 +1,14 @@
 // Similar to ControlSpec but bases itself on an array, and then the mapping function returns an indexed value from that array
 ArrayedSpec{
     var <indexSpec;
-    var <thisArray;
+    var <values;
 
     *new{|array, default=0|
         ^super.new.init(array, default)
     }
 
     init{|array, default|
-        thisArray = array;
+        values = array;
         indexSpec = ControlSpec.new(minval:0, maxval:array.size-1, warp:\lin, step:1, default:default);
     }
 
@@ -16,12 +16,12 @@ ArrayedSpec{
     map{|value|
         var index = indexSpec.map(value).asInteger;
 
-        ^thisArray[index]
+        ^values[index]
     }
 
     // Take a value from an array and return a normalized value 0.0-1.0 depending on it's index in the array
     unmap{|value|
-        var index = thisArray.indexOfEqual(value);
+        var index = values.indexOfEqual(value);
 
         ^indexSpec.unmap(index)
     }
@@ -31,7 +31,7 @@ ArrayedSpec{
     }
 
     array{
-        ^thisArray
+        ^values
     }
 
     default{
@@ -57,6 +57,10 @@ ArrayedSpec{
     step_{|newStep|
         indexSpec.step_(newStep);
     }
+
+    isArrayedSpec{
+        ^true
+    }
 }
 
 /*
@@ -74,9 +78,13 @@ ArrayedFuncSpec : ArrayedSpec {
 
         ^if(newIndex != lastIndex, {
             lastIndex = newIndex;
-            thisArray[newIndex].value();
+            values[newIndex].value();
         }, {
             nil
         })
+    }
+
+    isArrayedSpec{
+        ^false
     }
 }
