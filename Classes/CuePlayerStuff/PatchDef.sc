@@ -99,6 +99,7 @@ PatchDef{
             res = super.new().prAdd(key).configFunc_(configFunc).playFunc_(playFunc).stopFunc_(stopFunc).cleanupFunc_(cleanupFunc);
             res.data = IdentityDictionary.new;
         } {
+            "Not creating new patch def at % but modifying it.".format(key).postln;
             if(configFunc.notNil) { res.configFunc_(configFunc) };
             if(playFunc.notNil) { res.playFunc_(playFunc) };
             if(stopFunc.notNil) { res.stopFunc_(stopFunc) };
@@ -196,11 +197,11 @@ PatchDef{
         cuePlayer.put(index, this.asCueInfo);
     }
 
-    // FIXME: doesnt work
-    // copy{|toKey|
-    //     if(toKey.isNil or: { key == toKey }) { Error("can only copy to new key (key is %)".format(toKey)).throw };
-    //     ^this.class.new(toKey, configFunc: configFunc, playFunc: playFunc, stopFunc: stopFunc, cleanupFunc: cleanupFunc).data_(data);
-    // }
+    // FIXME: doesnt work properly
+    copy{|toKey|
+        if(toKey.isNil or: { key == toKey }) { Error("can only copy to new key (key is %)".format(toKey)).throw };
+        ^this.class.new(toKey, configFunc: configFunc.copy, playFunc: playFunc.copy, stopFunc: stopFunc.copy, cleanupFunc: cleanupFunc.copy).data_(data.copy);
+    }
 }
 
 // SceneDef : PatchDef{
