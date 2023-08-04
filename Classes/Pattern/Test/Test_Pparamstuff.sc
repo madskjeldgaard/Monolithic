@@ -1,4 +1,4 @@
-Test_Pparam : UnitTest {
+Test_Pparam : MonolithicTest {
     var param;
 
     setUp {
