@@ -92,4 +92,9 @@ Pctrldef : Pcontrol{
         patternProxy.clear();
         params.keysValuesDo{|k,v| v.clear()}
     }
+
+    solo{
+        all.select({|pdefctrl| pdefctrl != this}).keysValuesDo{|k,v| v.stop};
+        this.play;
+    }
 }
