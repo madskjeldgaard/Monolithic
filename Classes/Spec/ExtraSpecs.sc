@@ -8,7 +8,6 @@ ExtraSpecs{
 
         Spec.add(\time, [0.000000001,100000.0,\lin,0,1]);
 
-
         // Envelope stuff
         Spec.add(\attackTime, [0.0000001, 100.0, \exp]);
         Spec.add(\decayTime, [0.0000001, 100.0, \exp]);
@@ -41,6 +40,9 @@ ExtraSpecs{
         Spec.add(\uniplusone, [1.0,2.0,\lin]);
 
         Spec.add(\modAmount, [0.0,1.0,\lin]);
+
+        Spec.add(\probability, [0.0,1.0,\lin]);
+        Spec.add(\prob, [0.0,1.0,\lin]);
 
         ["pan", "amp", "filter", "fm", "freq", "rate", "playrate", "delay", "feedback", "wet", "dry", "gain"].do{|x|
             var keyString = "%ModAmount".format(x);
