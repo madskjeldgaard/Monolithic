@@ -14,6 +14,28 @@ s.waitForBoot{
     });
 }
 )
+
+// Example with CuePlayer
+c = CuePlayer.new()
+c.gui;
+(
+var path = "~/Desktop/kreuzberg-singleshots/kreuzberg-oneshot-gated-verb-001.wav".asAbsolutePath;
+var path2 = "~/Desktop/kreuzberg-singleshots/gatedverb/kreuzberg-oneshot-gated-verb-003.wav".asAbsolutePath;
+
+s.waitForBoot{
+    var buffer = Buffer.read(server:s, path:path);
+    var buffer2 = Buffer.read(server:s, path:path2);
+    s.sync;
+    o = OneShotSamplePlayer.new(buffer, playrate: 1.1, amp: 2);
+    y = OneShotSamplePlayer.new(buffer2, playrate: 1.1, amp: 2);
+    s.sync;
+    o.addToCuePlayer(c, true);
+    y.addToCuePlayer(c, true);
+    // o.play(action: {|msg|
+    //     "Sample done!!".postln;
+    // });
+}
+)
 */
 OneShotSamplePlayer{
     classvar <numPlayers = 0;
