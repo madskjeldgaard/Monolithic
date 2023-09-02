@@ -18,15 +18,11 @@ s.waitForBoot{
 OneShotSamplePlayer{
     classvar <numPlayers = 0;
 
-    var buffer, action, fadeTime, out, amp, playrate, lowcutFreq;
+    var buffer,  fadeTime, out, amp, playrate, lowcutFreq;
     var <synth, <oscfunc, <oscpath, synthdef, synthfunc;
 
-    *initClass{
-
-    }
-
-    *new{|buffer, action, fadeTime=0.0, out=0, amp=0.5, playrate=1|
-        ^super.newCopyArgs(buffer, action, fadeTime, out, amp, playrate).init()
+    *new{|buffer, fadeTime=0.0, out=0, amp=0.5, playrate=1|
+        ^super.newCopyArgs(buffer, fadeTime, out, amp, playrate).init()
     }
 
     init{
@@ -42,7 +38,7 @@ OneShotSamplePlayer{
         }
     }
 
-    play{
+    play{|action|
         oscfunc = OSCFunc({|msg, time, addr, recvPort|
             action.value(msg);
             // synth.free;
@@ -50,9 +46,33 @@ OneShotSamplePlayer{
 
         }, oscpath);
 
-        synth = synthfunc.play(outbus: out, args:[
+        synth = synthfunc.play(outbus: out, args: [
             \buffer, buffer, \fadeTime, fadeTime, \out, out, \amp, amp, \playrate, playrate
         ]);
+    }
+
+    asCueInfo{|triggerNextWhenDone=false|
+        var fileName = PathName(buffer.path).fileNameWithoutExtension;
+        var title = "Oneshot: %".format(fileName);
+
+        ^CueInfo.new(title, title, {|cue|
+
+            // Register cleanup functions
+            cue.hook = {};
+
+            this.play(action: {
+                defer{
+                    if(triggerNextWhenDone, {
+                        cue.next();
+                    })
+
+                }
+            });
+        })
+    }
+
+    addToCuePlayer{|cuePlayer, triggerNextWhenDone=false|
+        cuePlayer.add(this.asCueInfo(triggerNextWhenDone));
     }
 
 }
