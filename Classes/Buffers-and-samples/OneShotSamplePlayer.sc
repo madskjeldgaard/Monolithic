@@ -7,11 +7,11 @@ var path = "~/Desktop/kreuzberg-singleshots/kreuzberg-oneshot-gated-verb-001.wav
 s.waitForBoot{
     var buffer = Buffer.read(server:s, path:path);
     s.sync;
-    o = OneShotSamplePlayer.new(buffer, {|msg|
+    o = OneShotSamplePlayer.new(buffer);
+    s.sync;
+    o.play(action: {|msg|
         "Sample done!!".postln;
     });
-    s.sync;
-    o.play;
 }
 )
 */
