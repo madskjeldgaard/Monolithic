@@ -52,7 +52,6 @@ OneShotSamplePlayer{
         oscpath = "/oneshotsample/%".format(numPlayers).asSymbol;
         synthfunc = {|playrate=1, amp|
             var end = buffer.numFrames;
-            // var phase = Phasor.ar(0, playrate * BufRateScale.ir(buffer), 0, end);
             var phase = Line.ar(start:0, end:end, dur:playrate.reciprocal * BufRateScale.ir(buffer), doneAction:2);
             var hasEnded = phase > (end-1);
             SendReply.ar(trig:hasEnded, cmdName:oscpath, values:[phase, end, hasEnded], replyID:-1);
