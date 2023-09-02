@@ -56,6 +56,36 @@ Pcontrol [] {
         })
     }
 
+
+    incrementRawOne{|key, value|
+        if(params[key].notNil, {
+            params[key].source = params[key].source + value;
+        }, {
+            "%: param % not found".format(this.class.name, key).warn;
+        })
+    }
+
+    // Add a value to a param's existing value
+    increment{|...keyValuePairs|
+        keyValuePairs.arePairs.if({
+            keyValuePairs.pairsDo{|key, value|
+                this.incrementRawOne(key, value)
+            }
+        }, {
+            "incrementRaw expects pairs".warn;
+        })
+    }
+
+    decrement{|...keyValuePairs|
+        keyValuePairs.arePairs.if({
+            keyValuePairs.pairsDo{|key, value|
+                this.increment(key, -1 * value)
+            }
+        }, {
+            "decrement expects pairs".warn;
+        })
+    }
+
     map{|...keyValuePairs|
         keyValuePairs.arePairs.if({
             keyValuePairs.pairsDo{|key, value|
