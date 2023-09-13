@@ -66,7 +66,9 @@ LoopingSamplePlayer{
     }
 
     stop{
-        synth.onFree(action);
+        if(synth.notNil, {
+            synth.onFree(action);
+        });
         routine.stop;
         synth.set(\doneAction, 2);
         synth.set(\gate, 0);

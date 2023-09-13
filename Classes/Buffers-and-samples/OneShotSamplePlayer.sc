@@ -52,7 +52,7 @@ OneShotSamplePlayer{
         oscpath = "/oneshotsample/%".format(numPlayers).asSymbol;
         synthfunc = {|playrate=1, amp|
             var end = buffer.numFrames;
-            var phase = Line.ar(start:0, end:end, dur:playrate.reciprocal * BufRateScale.ir(buffer), doneAction:2);
+            var phase = Line.ar(start:0, end:end, dur:playrate.reciprocal * buffer.duration, doneAction:2);
             var hasEnded = phase > (end-1);
             SendReply.ar(trig:hasEnded, cmdName:oscpath, values:[phase, end, hasEnded], replyID:-1);
             amp * BufRd.ar(numChannels:buffer.numChannels, bufnum:buffer, phase:phase, loop:0.0, interpolation:4);
@@ -72,6 +72,11 @@ OneShotSamplePlayer{
         ]);
     }
 
+    stop{
+        oscfunc.free;
+        synth.release;
+    }
+
     asCueInfo{|triggerNextWhenDone=false|
         var fileName = PathName(buffer.path).fileNameWithoutExtension;
         var title = "Oneshot: %".format(fileName);
@@ -79,7 +84,11 @@ OneShotSamplePlayer{
         ^CueInfo.new(title, title, {|cue|
 
             // Register cleanup functions
-            cue.hook = {};
+            cue.hook = {
+                defer{
+                    this.stop()
+                }
+            };
 
             this.play(action: {
                 defer{
