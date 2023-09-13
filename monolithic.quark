@@ -1,12 +1,13 @@
 (
   name: "Monolithic",
   summary: "An assortment of extensions for SuperCollider",
-  version: "0.001",
+  version: "0.1",
   schelp: "Monolithic.schelp",
   dependencies: [
       "https://github.com/madskjeldgaard/PolyBuf",
       "https://github.com/dathinaios/CuePlayer",
-      "https://github.com/supercollider-quarks/wslib"
+      "https://github.com/supercollider-quarks/wslib",
+      "https://github.com/n-armstrong/fosc"
   ],
   license: "GNU GPL v3.0",
   copyright: "madskjeldgaard",
