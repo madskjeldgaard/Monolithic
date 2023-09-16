@@ -106,7 +106,6 @@ LoopingSamplePlayer{
                     (bufDuration - fadeTime).wait;
                 });
 
-                "Releasing synth".postln;
                 synth.release;
 
                 pingpong.if({
