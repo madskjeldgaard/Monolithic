@@ -70,3 +70,16 @@ TimedTrajectory{
         timeline.stop;
     }
 }
+
++ Env{
+    asTimedTrajectory{|totalDuration, timeGrain=1.0, func, clock, options|
+        ^TimedTrajectory.new(
+            totalDuration: totalDuration,
+            timeGrain: timeGrain,
+            func: func,
+            env: this,
+            clock: clock,
+            options: options,
+        )
+    }
+}
