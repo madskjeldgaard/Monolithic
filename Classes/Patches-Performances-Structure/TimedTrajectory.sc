@@ -38,7 +38,7 @@ t.play;
 
 */
 TimedTrajectory{
-    var <timeline, <array;
+    var <timeline, <array, <envelope;
 
     *new{|totalDuration, timeGrain=1.0, func, env, clock, options|
         ^super.new().init(totalDuration, timeGrain, func, env, clock, options);
@@ -46,6 +46,7 @@ TimedTrajectory{
 
     init{|totalDuration, timeGrain=1.0, func, env, clock, options|
         var numSteps = (totalDuration/timeGrain).asInteger;
+        envelope = env;
 
         // Behind the scenes
         array = Array.fill(numSteps, {|index|
@@ -68,6 +69,10 @@ TimedTrajectory{
 
     stop{
         timeline.stop;
+    }
+
+    plot{
+        ^envelope.plot
     }
 }
 

@@ -45,7 +45,7 @@ LoopingSamplePlayer{
             var amp = ~amp ? 0.5;
             var pingpong = ~pingpong ? false;
 
-            var player = LoopingSamplePlayer(numChannels: numChannels, buffer: buffer, fadeTime: fadeTime, playrate: playrate, pingpong: pingpong);
+            var player = LoopingSamplePlayer(numChannels: numChannels, out: out, buffer: buffer, fadeTime: fadeTime, playrate: playrate, amp: amp, pingpong: pingpong);
 
             // If fade is longer than event duration
             if(fadeTime > duration, {
@@ -78,6 +78,7 @@ LoopingSamplePlayer{
             var loopEnd = \loopEnd.kr(1.0, spec: [0.0,1.0,\lin]);
             var env = Env.gatefade(fadeTime: fadeTime).ar(gate: gate, doneAction: doneAction);
             var end = buffer.numFrames-1;
+            var amp = \amp.kr(0.125, lag: lagTime, spec: [0.0,1.0,\lin]);
             var phasor;
 
             playrate = playrate * BufRateScale.kr(buffer);
@@ -89,7 +90,7 @@ LoopingSamplePlayer{
                 phasor = \RedPhasor.asClass.ar(0, playrate, 0, end, loop, loopStart*end, loopEnd*end)
             });
 
-            env * BufRd.ar(numChannels, buffer, phase: phasor, loop: 0, interpolation: 4);
+            amp * env * BufRd.ar(numChannels, buffer, phase: phasor, loop: 0, interpolation: 4);
         }
     }
 
@@ -98,7 +99,7 @@ LoopingSamplePlayer{
             var args = synthArgs;
             var bufDuration = (buffer.duration / playrate);
 
-            synth = this.synthFunc().play(args:args.asKeyValuePairs);
+            synth = this.synthFunc().play(outbus:out, args:args.asKeyValuePairs);
 
             loop{
 
@@ -113,7 +114,7 @@ LoopingSamplePlayer{
                     args[\playrate] = args[\playrate] * lastDirection;
                 });
 
-                synth = this.synthFunc().play(args:args.asKeyValuePairs);
+                synth = this.synthFunc().play(outbus:out, args:args.asKeyValuePairs);
 
             }
         });
