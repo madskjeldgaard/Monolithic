@@ -1,7 +1,6 @@
 + String{
-    asOSCFunc{
-        ^OSCFunc.new(func:{|msg|
-            msg.postln;
-        }, path:this);
+    asOSCFunc{|func|
+        func = func ? { |msg| msg.postln };
+        ^OSCFunc.new(func:func, path:this);
     }
 }
