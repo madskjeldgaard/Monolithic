@@ -13,47 +13,71 @@ Pfadein2{
     }
 
     *initClass{
-        (1..64).do{|numChannels|
-            SynthDef("fadesynth%".format(numChannels).asSymbol, {
-                var out = \out.kr(0);
-                var sig = In.ar(bus:out, numChannels:numChannels);
-                var gate = \gate.ar(1);
-                var fadetime = \xfadetime.kr(4.0);
-                var env = Env.fadein(fadeTime:fadetime, sustainLevel:1);
-                env = env.ar(gate: gate, doneAction: Done.freeGroup);
+        Class.initClassTree(SynthDescLib);
+        Class.initClassTree(Server);
 
-                ReplaceOut.ar(bus:out, channelsArray:sig * env);
+        StartUp.add({
 
-            }).add;
-        }
+            (1..64).do{|numChannels|
+                var name = "fadeinsynth%".format(numChannels).asSymbol;
+
+                name.synthdefBinaryExists.not.if{
+                    "Pfadein synth % doesn't exist, creating it now.".format(name).postln;
+
+                    SynthDef(name, {
+                        var out = \out.kr(0);
+                        var sig = In.ar(bus:out, numChannels:numChannels);
+                        var gate = \gate.ar(1);
+                        var fadetime = \xfadetime.kr(4.0);
+                        var env = Env.fadein(fadeTime:fadetime, sustainLevel:1);
+                        env = env.ar(gate: gate, doneAction: Done.freeGroup);
+
+                        ReplaceOut.ar(bus:out, channelsArray:sig * env);
+
+                    }).store;
+                }
+            }
+
+        })
 
     }
 
     init{|inPattern, numChannels, fadeTime|
-        ^Pgroup(Pfx(inPattern, "fadesynth%".format(numChannels).asSymbol, \xfadetime, fadeTime));
+        ^Pgroup(Pfx(inPattern, "fadeinsynth%".format(numChannels).asSymbol, \xfadetime, fadeTime));
     }
 
 }
 
 Pfadeinout2{
-
     *new{|inPattern, numChannels=2, fadeTime=10|
         ^super.new.init(inPattern, numChannels, fadeTime);
     }
 
     *initClass{
-        (1..64).do{|numChannels|
-            SynthDef("fadeinoutsynth%".format(numChannels).asSymbol, {
-                var out = \out.kr(0);
-                var sig = In.ar(bus:out, numChannels:numChannels);
-                var gate = \gate.ar(1);
-                var fadetime = \xfadetime.kr(4.0);
-                var env = Env.gatefade(fadeTime:fadetime, sustainLevel:1);
-                env = env.ar(gate: gate, doneAction: Done.freeGroup);
-                ReplaceOut.ar(bus:out, channelsArray:sig * env);
 
-            }).add;
-        }
+        Class.initClassTree(SynthDescLib);
+        Class.initClassTree(Server);
+
+        StartUp.add({
+            (1..64).do{|numChannels|
+                var name = "fadeinoutsynth%".format(numChannels).asSymbol;
+
+                name.synthdefBinaryExists.not.if({
+                    "Pfadeinout synth % doesn't exist, creating it now.".format(name).postln;
+                    SynthDef(name, {
+                        var out = \out.kr(0);
+                        var sig = In.ar(bus:out, numChannels:numChannels);
+                        var gate = \gate.ar(1);
+                        var fadetime = \xfadetime.kr(4.0);
+                        var env = Env.gatefade(fadeTime:fadetime, sustainLevel:1);
+                        env = env.ar(gate: gate, doneAction: Done.freeGroup);
+                        ReplaceOut.ar(bus:out, channelsArray:sig * env);
+
+                    }).store;
+                })
+            }
+        })
+
 
     }
 
