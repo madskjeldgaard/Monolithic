@@ -128,12 +128,24 @@ Pcontrol [] {
         })
     }
 
-    play{|clock, quant, doReset=false|
+    // If fadeInTime is above 0, it will wrap the proxy source in Pfadein2 and fade in the pattern
+    // The fadeChannels argument should correspond to the number of channels in the pattern you are playing.
+    play{|clock, quant, fadeInTime = 0, fadeOutTime = 0, fadeChannels, doReset=false|
+        fadeChannels = fadeChannels ? Server.local.options.numOutputBusChannels;
+
+
         if(patternProxy.isNil, {
             "%: no pattern to play".format(this.class.name).warn;
+        }, {
+
+            // Wrap the pattern proxy in a fader if fade in/out times are specified
+            (fadeInTime > 0.0 or: { fadeOutTime > 0.0 }).if({
+                patternProxy.source = Pfadeinout2.new(patternProxy.source, fadeInTime: fadeInTime, fadeOutTime: fadeOutTime, numChannels: fadeChannels)
+            });
+
+            patternProxyPlayer = patternProxy.play(argClock: clock, quant: quant, doReset: doReset);
         });
 
-        patternProxyPlayer = patternProxy.play(argClock: clock, quant: quant, doReset: doReset);
     }
 
     stop{
