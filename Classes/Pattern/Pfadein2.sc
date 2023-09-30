@@ -48,9 +48,19 @@ Pfadein2{
 
 }
 
+/*
+// Example
+
+(
+p = Pfadeinout2(Pbind(\degree, Pwhite(0,10), \dur, 4.0, \legato, 2), fadeInTime: 10, fadeOutTime: 2);
+)
+p = p.play;
+p.stop;
+
+*/
 Pfadeinout2{
-    *new{|inPattern, numChannels=2, fadeTime=10|
-        ^super.new.init(inPattern, numChannels, fadeTime);
+    *new{|inPattern, numChannels=2, fadeInTime=10, fadeOutTime=1|
+        ^super.new.init(inPattern, numChannels, fadeInTime, fadeOutTime);
     }
 
     *initClass{
@@ -68,8 +78,9 @@ Pfadeinout2{
                         var out = \out.kr(0);
                         var sig = In.ar(bus:out, numChannels:numChannels);
                         var gate = \gate.ar(1);
-                        var fadetime = \xfadetime.kr(4.0);
-                        var env = Env.gatefade(fadeTime:fadetime, sustainLevel:1);
+                        var fadeInTime = \fadeInTime.kr(4.0);
+                        var fadeOutTime = \fadeOutTime.kr(4.0);
+                        var env = Env.fadeinout(fadeInTime:fadeInTime, fadeOutTime: fadeOutTime, sustainLevel:1);
                         env = env.ar(gate: gate, doneAction: Done.freeGroup);
                         ReplaceOut.ar(bus:out, channelsArray:sig * env);
 
@@ -81,7 +92,7 @@ Pfadeinout2{
 
     }
 
-    init{|inPattern, numChannels, fadeTime|
-        ^Pgroup(Pfx(inPattern, "fadeinoutsynth%".format(numChannels).asSymbol, \xfadetime, fadeTime));
+    init{|inPattern, numChannels, fadeInTime, fadeOutTime|
+        ^Pgroup(Pfx(inPattern, "fadeinoutsynth%".format(numChannels).asSymbol, \fadeInTime, fadeInTime, \fadeOutTime, fadeOutTime));
     }
 }
