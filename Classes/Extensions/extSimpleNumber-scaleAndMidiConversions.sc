@@ -1,7 +1,7 @@
 + SimpleNumber {
 
     // Convert a midi note to playrate
-    midinote2Rate{|referenceNote=60|
+    midinote2Rate{|referenceNote=48|
         var noteIn = this;
         var distanceFromReferenceNote = noteIn - referenceNote;
         var rate = distanceFromReferenceNote.midiratio;
@@ -34,7 +34,7 @@
         ^noteOut
     }
 
-    scaleDegree2PlayRate{|scale, root = 0, degree = 0, octave = 4, stepsPerOctave=12, referenceNote=60|
+    scaleDegree2PlayRate{|scale, root = 0, degree = 0, octave = 4, stepsPerOctave=12, referenceNote=48|
         var noteIn = this;
         var noteOut = noteIn.scaleDegree2Midinote(scale, root, degree, octave, stepsPerOctave);
         var rate = noteOut.midinote2Rate(referenceNote);
