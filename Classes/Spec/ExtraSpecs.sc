@@ -21,6 +21,7 @@ ExtraSpecs{
 
         // MIDI
         Spec.add(\midinote, [0,127,\lin,1,0]);
+        Spec.add(\midival, [0,127,\lin,1,0]);
         Spec.add(\midivel, [0,127,\lin,1,0]);
         Spec.add(\midicc, [0,127,\lin,1,0]);
         Spec.add(\midipgm, [0,127,\lin,1,0]);
