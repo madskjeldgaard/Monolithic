@@ -37,3 +37,21 @@ NvimMap {
     }
 
 }
+
+NvimNotify{
+    *luaeval{|code|
+        if(\SCNvim.asClass.notNil, {
+            \SCNvim.asClass.luaeval(code);
+        })
+    }
+
+    *notify{|msg, loglevel=3|
+        var luacode = format(
+            "vim.notify('%', %)",
+            msg, loglevel
+        ).postln;
+
+        this.luaeval(luacode);
+    }
+
+}
