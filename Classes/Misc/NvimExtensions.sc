@@ -6,7 +6,9 @@ Needs SCNvim to be installed and running.
 
 Example:
 
-NvimMap.mapSC("n", "<F9>", "\"hejhej\".postln");
+~f6Func = { "hejhej".postln };
+NvimMap.mapSC("n", "<F6>", "~f6Func.value()");
+
 
 */
 NvimMap {
