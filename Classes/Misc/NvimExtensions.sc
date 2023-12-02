@@ -19,7 +19,7 @@ NvimMap : Nvim {
         var luacode = format(
             "vim.keymap.set('%', '%', %, {silent = true})",
             mode, lhs, rhs
-        ).postln;
+        );
 
         this.luaeval(luacode);
     }
@@ -31,7 +31,7 @@ NvimMap : Nvim {
 
         rhs = format("'<cmd>lua %<cr>'", luaFunc);
 
-        this.map(mode, lhs, rhs.postln);
+        this.map(mode, lhs, rhs);
     }
 
 }
@@ -55,7 +55,7 @@ NvimOpen : Nvim {
         var luacode = format(
             "vim.cmd('tabedit %')",
             path
-        ).postln;
+        );
 
         this.luaeval(luacode);
 
