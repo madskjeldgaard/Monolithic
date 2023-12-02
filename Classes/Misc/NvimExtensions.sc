@@ -42,7 +42,7 @@ NvimNotify : Nvim{
         var luacode = format(
             "vim.notify('%', %)",
             msg, loglevel
-        ).postln;
+        );
 
         this.luaeval(luacode);
     }
