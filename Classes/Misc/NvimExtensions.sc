@@ -38,7 +38,7 @@ NvimMap : Nvim {
 
 NvimNotify : Nvim{
 
-    *notify{|msg, loglevel=3|
+    *notify{|msg, loglevel=2|
         var luacode = format(
             "vim.notify('%', %)",
             msg, loglevel
