@@ -1,5 +1,9 @@
 Nvim {
 
+    *luaeval{|code|
+        this.send(code);
+    }
+
     *send{|code|
         // Wrap like this to avoid problems when not using SCNvim
         if(\SCNvim.asClass.notNil, {
