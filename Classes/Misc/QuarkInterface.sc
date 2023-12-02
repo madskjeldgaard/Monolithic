@@ -22,6 +22,17 @@ QuarkInterface{
     //                 Manage sub directories of quark                  //
     //------------------------------------------------------------------//
 
+    // Load a file relative to this quark
+    *loadFileRelative{|filename|
+        var path = this.pathName() +/+ filename;
+
+        ^path.isFile.not.if({
+            ("File not found: " + path.fullPath).error
+        }, {
+            path.fullPath.load
+        });
+    }
+
     *filesInSubDir{|subdir|
         var path = this.pathName() +/+ subdir;
 
