@@ -11,12 +11,8 @@ NvimMap.mapSC("n", "<F6>", "~f6Func.value()");
 
 
 */
-NvimMap {
-    *luaeval{|code|
-        if(\SCNvim.asClass.notNil, {
-            \SCNvim.asClass.luaeval(code);
-        })
-    }
+
+NvimMap : Nvim {
 
     // Maps a key in scnvim
     *map{|mode, lhs, rhs|
@@ -40,12 +36,7 @@ NvimMap {
 
 }
 
-NvimNotify{
-    *luaeval{|code|
-        if(\SCNvim.asClass.notNil, {
-            \SCNvim.asClass.luaeval(code);
-        })
-    }
+NvimNotify : Nvim{
 
     *notify{|msg, loglevel=3|
         var luacode = format(
@@ -56,4 +47,17 @@ NvimNotify{
         this.luaeval(luacode);
     }
 
+}
+
+NvimOpen : Nvim {
+
+    *openTab{|path|
+        var luacode = format(
+            "vim.cmd('tabedit %')",
+            path
+        ).postln;
+
+        this.luaeval(luacode);
+
+    }
 }
