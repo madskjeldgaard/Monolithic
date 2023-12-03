@@ -20,4 +20,11 @@
             ((cueNum + 1).asString ++ ": " ++ cue.cueTitle).postln;
         };
     }
+
+    currentCueTitle{
+        var cueIdx = current - 1;
+        var title = cueList[cueIdx].cueTitle;
+
+        ^title;
+    }
 }
