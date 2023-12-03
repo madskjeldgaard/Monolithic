@@ -17,14 +17,9 @@ SlidingValue{
         clock = TempoClock.new.permanent_(true);
     }
 
-    time_{|newSlideTime, newTimeGrain|
+    time_{|newSlideTime|
         slideTime = newSlideTime;
-        if(newTimeGrain.notNil){
-            timeGrain = newTimeGrain;
-        } {
-            var minTimeGrain =  0.001;
-            timeGrain = (slideTime / 100.0).max(minTimeGrain);
-        };
+        timeGrain = (slideTime / 100.0).max(minTimeGrain);
     }
 
 
