@@ -4,7 +4,6 @@
   version: "0.1",
   schelp: "Monolithic.schelp",
   dependencies: [
-      "https://github.com/madskjeldgaard/PolyBuf",
       "https://github.com/dathinaios/CuePlayer",
       "https://github.com/supercollider-quarks/wslib",
       "https://github.com/n-armstrong/fosc"
