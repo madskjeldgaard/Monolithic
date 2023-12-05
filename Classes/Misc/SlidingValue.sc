@@ -18,6 +18,7 @@ SlidingValue{
     }
 
     time_{|newSlideTime|
+        var minTimeGrain = 0.0025;
         slideTime = newSlideTime;
         timeGrain = (slideTime / 100.0).max(minTimeGrain);
     }
