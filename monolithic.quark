@@ -6,7 +6,9 @@
   dependencies: [
       "https://github.com/dathinaios/CuePlayer",
       "https://github.com/supercollider-quarks/wslib",
-      "https://github.com/n-armstrong/fosc"
+      "https://github.com/n-armstrong/fosc",
+      "https://github.com/madskjeldgaard/PolyBuf"
+
   ],
   license: "GNU GPL v3.0",
   copyright: "madskjeldgaard",
