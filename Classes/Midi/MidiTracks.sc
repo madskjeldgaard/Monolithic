@@ -1,5 +1,9 @@
 /*
 * The main point of these classes is to be used as bridges between sensor inputs and a midi target, they allow soloing midi streams (to allow mapping certain cc values in a DAW for example) and rate limiting the output, as to avoid spamming the target.
+
+// TODO:
+- Randomize
+
 *
 */
 
@@ -87,6 +91,7 @@ MidiCCTrack{
 
     asGUILayout{|window|
         var nameLabel = StaticText.new(window).string_(name);
+        var midiInfoLabel = StaticText.new(window).string_("chan: %, cc: %".format(midiChannel+1, ccnum+1));
 
         var muteButton = Button.new(window)
         .states_([
@@ -129,9 +134,10 @@ MidiCCTrack{
         });
 
         var newLayout = HLayout.new(
-            nameLabel,
-            valueSlider,
-            muteButton,
+            [nameLabel, a: \left, s:2],
+            [midiInfoLabel, a: \left, s:2],
+            [valueSlider, s: 8],
+            [muteButton, s: 1],
             // soloButton,
         );
 
@@ -155,7 +161,7 @@ MidiCCTrack{
     }
 
     gui{
-        var window = Window.new("MidiCCTrack: %".format(name), Rect(100,100,500,50));
+        var window = Window.new("MidiCCTrack: %".format(name), bounds: Rect(0,0,Window.availableBounds.width.asInteger*0.75,100), scroll: false);
         window.layout = this.asGUILayout(window);
         window.front;
         window.onClose_({
@@ -230,8 +236,9 @@ MidiStreamer {
                 var muteTracks = tracks.values.reject{|t| t == track};
 
                 muteTracks.do{|t|
-                    t.mute = true;
-                    t.solo = false;
+                    if(t.solo.not, {
+                        t.mute = true;
+                    })
                 };
 
                 "Soloing track %".format(track.name).postln;
@@ -289,7 +296,7 @@ MidiStreamer {
     }
 
     gui{
-        var window = Window.new("MidiStreamer: %".format(name), Rect(100,100,500,50));
+        var window = Window.new("MidiStreamer: %".format(name), Rect(0,0,Window.availableBounds.width.asInteger*0.66, 150), scroll: true);
         var layout = this.asGUILayout(window);
         // var soloDependant = {|changer, whatChanged|
         //     if(whatChanged == \solo, {
