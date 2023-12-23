@@ -35,7 +35,7 @@ m.at('oscFreq').send(20);
 // A data class that holds a value and a timestamp for when it was last updated (used for rate limiting)
 // A midi track takes a value and sends it to a midiout as a midi cc value, it can be muted and soloed and has a name.
 MidiCCTrack{
-    var <name, <midiout, <midiChannel, <ccnum, <>mute, <>solo, <timeOfLast, <timeLimitThreshold;
+    var <name, <midiout, <midiChannel, <ccnum, <mute, <solo, <timeOfLast, <timeLimitThreshold, <lastVal=0, <>onlySendNewValues=true, <minVal=0, <maxVal=127, dependant, soloFunc, muteFunc;
 
     *new{ arg name, midiout, midiChannel, ccnum, timeLimitSeconds = 0.01;
         ^super.newCopyArgs(name, midiout, midiChannel, ccnum, false, false, Date.getDate.rawSeconds, timeLimitSeconds);
@@ -46,10 +46,121 @@ MidiCCTrack{
             var timeSinceLast = Date.getDate.rawSeconds - timeOfLast;
 
             if(timeSinceLast > timeLimitThreshold, {
-                midiout.control(midiChannel, ccnum, val);
-                timeOfLast = Date.getDate.rawSeconds;
+
+                if(onlySendNewValues.not or: (onlySendNewValues and: val != lastVal), {
+                    midiout.control(midiChannel, ccnum, val);
+                    timeOfLast = Date.getDate.rawSeconds;
+                    lastVal = val;
+                    this.changed('value', val);
+                })
+            })
+        })
+    }
+
+    mute_{|enabled=true|
+        mute = enabled;
+        // muteFunc.value(mute);
+        this.changed('mute', mute);
+    }
+
+    solo_{|enabled=true|
+        solo = enabled;
+        // soloFunc.value(solo);
+        this.changed('solo', solo);
+    }
+
+    // doOnSolo{ arg func;
+    //     soloFunc = func;
+    // }
+
+    // doOnMute{ arg func;
+    //     muteFunc = func;
+
+
+    map{|normalizedVal|
+        ^normalizedVal.linlin(0.0,1.0,minVal,maxVal)
+    }
+
+    unmap{|val|
+        ^val.linlin(minVal,maxVal,0.0,1.0)
+    }
+
+    asGUILayout{|window|
+        var nameLabel = StaticText.new(window).string_(name);
+
+        var muteButton = Button.new(window)
+        .states_([
+            ["Mute", Color.black],
+            ["Muted", Color.red],
+        ])
+        .value_(
+            if(mute, {1}, {0})
+        )
+        .action_({|obj|
+            var val = obj.value;
+
+            if(val == 1, {
+                this.mute = true;
+            }, {
+                this.mute = false;
             })
         });
+
+        // var soloButton = Button.new(window)
+        // .states_([
+        //     ["Solo", Color.black],
+        //     ["Soloed", Color.blue]
+        // ]).action_({|obj|
+        //     var val = obj.value;
+
+        //     if(val == 1, {
+        //         this.solo = true;
+        //     }, {
+        //         this.solo = false;
+        //     })
+        // });
+
+        var valueSlider = Slider.new(window)
+        .orientation_(\horizontal)
+        .value_(0)
+        .action_({|obj|
+            var val = this.map(obj.value);
+            this.send(val);
+        });
+
+        var newLayout = HLayout.new(
+            nameLabel,
+            valueSlider,
+            muteButton,
+            // soloButton,
+        );
+
+        dependant = {|changer, whatChanged|
+
+            whatChanged.switch(
+                \solo, {
+                    // soloButton.value = solo.if({1},{0});
+                },
+                \mute, {
+                    muteButton.value = mute.if({1},{0});
+                },
+                \value, {
+                    valueSlider.value = this.unmap(lastVal);
+                }
+            )
+        };
+
+        this.addDependant(dependant);
+        ^newLayout
+    }
+
+    gui{
+        var window = Window.new("MidiCCTrack: %".format(name), Rect(100,100,500,50));
+        window.layout = this.asGUILayout(window);
+        window.front;
+        window.onClose_({
+            this.removeDependant(dependant);
+        })
     }
 }
 
@@ -94,6 +205,7 @@ MidiStreamer {
 
     addTrack{ arg track;
         var name = track.name.asSymbol;
+        // track.doOnSolo({|val| this.solo(name)});
         tracks.put(name, track);
     }
 
@@ -108,12 +220,12 @@ MidiStreamer {
 
     // This is a toggle that will mute all tracks except for the one specified by name
     // If the track is already soloed, it will unmute all tracks
-    solo{ arg name;
+    solo{ arg name, enabled=true;
         var track = this.at(name);
 
         if(track.notNil, {
 
-            if(track.solo.not, {
+            if(enabled, {
                 // Set all tracks to mute, except for this one
                 var muteTracks = tracks.values.reject{|t| t == track};
 
@@ -136,6 +248,66 @@ MidiStreamer {
             })
         },{
             "MidiStreamer: track not found".warn;
+        })
+    }
+
+    asGUILayout{|window|
+        var trackGUIs = tracks.values.collect{|t|
+            var soloButton = Button.new(window)
+            .states_([
+                ["Solo", Color.black],
+                ["Soloed", Color.blue]
+            ])
+            .value_(
+                if(t.solo, {1}, {0})
+            )
+            .action_({|obj|
+                var val = obj.value;
+
+                if(val == 1, {
+                    // Solo this track
+                    this.solo(t.name);
+
+                    // unsolo all other tracks
+                    tracks.values.reject{|track| track == t}.do{|track|
+                        this.solo(false);
+                    };
+
+                }, {
+                    this.solo(t.name, false);
+                })
+            });
+
+            var trackLayout = t.asGUILayout(window);
+
+            HLayout(*[soloButton, trackLayout]);
+        };
+
+        var newLayout = VLayout(*trackGUIs);
+
+        ^newLayout
+    }
+
+    gui{
+        var window = Window.new("MidiStreamer: %".format(name), Rect(100,100,500,50));
+        var layout = this.asGUILayout(window);
+        // var soloDependant = {|changer, whatChanged|
+        //     if(whatChanged == \solo, {
+        //     })
+        // };
+
+        // tracks.keysValuesDo{|name, track|
+        //     track.addDependant(soloDependant);
+        // };
+
+        window.layout = layout;
+        window.front;
+
+        window.onClose_({
+            tracks.keysValuesDo{|name, track|
+                track.removeDependant(track.dependant);
+                // track.removeDependant(soloDependant);
+            }
         })
     }
 
