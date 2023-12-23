@@ -39,7 +39,7 @@ m.at('oscFreq').send(20);
 // A data class that holds a value and a timestamp for when it was last updated (used for rate limiting)
 // A midi track takes a value and sends it to a midiout as a midi cc value, it can be muted and soloed and has a name.
 MidiCCTrack{
-    var <name, <midiout, <midiChannel, <ccnum, <mute, <solo, <timeOfLast, <timeLimitThreshold, <lastVal=0, <>onlySendNewValues=true, <minVal=0, <maxVal=127, dependant, soloFunc, muteFunc;
+    var <name, <midiout, <midiChannel, <ccnum, <mute, <solo, <timeOfLast, <timeLimitThreshold, <lastVal=0, <>onlySendNewValues=true, <minVal=0, <maxVal=127, dependant, soloFunc, muteFunc, <randomizer;
 
     *new{ arg name, midiout, midiChannel, ccnum, timeLimitSeconds = 0.01;
         ^super.newCopyArgs(name, midiout, midiChannel, ccnum, false, false, Date.getDate.rawSeconds, timeLimitSeconds);
@@ -148,10 +148,14 @@ MidiCCTrack{
                     // soloButton.value = solo.if({1},{0});
                 },
                 \mute, {
-                    muteButton.value = mute.if({1},{0});
+                    defer{
+                        muteButton.value = mute.if({1},{0});
+                    }
                 },
                 \value, {
-                    valueSlider.value = this.unmap(lastVal);
+                    defer{
+                        valueSlider.value = this.unmap(lastVal);
+                    }
                 }
             )
         };
@@ -166,6 +170,29 @@ MidiCCTrack{
         window.front;
         window.onClose_({
             this.removeDependant(dependant);
+        })
+    }
+
+    randomizerStart{|enabled=true, speed=0.1|
+
+        if(enabled, {
+
+            if(randomizer.notNil, {
+                randomizer.stop;
+                randomizer = nil;
+            });
+
+            randomizer = Routine.new({
+                loop{
+                    var val = rrand(minVal, maxVal);
+                    var waitTime = ((1.0 - speed) + rrand(-0.05, 0.05)).clip(0.01, 1.0);
+                    this.send(val);
+                    waitTime.wait;
+                }
+            }).play;
+        }, {
+            randomizer.stop;
+            randomizer = nil;
         })
     }
 }
