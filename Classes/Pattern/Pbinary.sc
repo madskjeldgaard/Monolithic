@@ -12,7 +12,7 @@ Pbind(
 */
 Pbinary{
 
-    *new{|list, repeats|
+    *new{|list, repeats=inf|
         ^super.new.init(list, repeats)
     }
 
@@ -24,4 +24,10 @@ Pbinary{
         ^Pseq(list, repeats);
     }
 
+}
+
++Array{
+    asPbinary{|repeats=inf|
+        ^Pbinary.new(this, repeats)
+    }
 }
