@@ -18,6 +18,9 @@ v.show;
 
 )
 
+TODO:
+- This class should really have some automatic tests to ensure it works as expected.
+
 */
 
 EventPattern2Fosc {
@@ -46,11 +49,32 @@ EventPattern2Fosc {
             var pitch = instance.resolveEventPitch(event);
             var duration = instance.resolveEventDuration(event);
 
+            // If there is more than one pitch or duration, it's a chord
             var isChord = duration.isKindOf(Collection) or: { pitch.isKindOf(Collection) };
 
             isChord.if({
                 // A chord
-                var chord = FoscChord.new(writtenPitches: pitch, writtenDuration: duration);
+                var chord = nil;
+                var isRest = duration.isRest or: { pitch.isRest };
+
+                isRest.if({
+                    // If the duration is a list, get the first element
+                    var restDuration = if(duration.isKindOf(Collection), {
+                        duration.first;
+                    }, {
+                        duration;
+                    });
+
+                    "Chord contains a rest".warn;
+
+                    // Make the fosc chord
+                    chord = FoscRest.new(writtenDuration: duration.value);
+                }, {
+                    // Resolve the duration for the pitches
+                    // Make the fosc chord
+                    chord = FoscChord.new(writtenPitches: pitch, writtenDuration: duration);
+                });
+
                 outList = outList.add(chord);
             }, {
                 var isRest = duration.isRest or: { pitch.isRest };
@@ -77,8 +101,10 @@ EventPattern2Fosc {
     resolveEventPitch {|event|
         var degree = event['degree'];
         var root = event['root'] ? 0;
+        var mtranspose = event['mtranspose'] ? 0;
+        var resolvedPitch = 0;
 
-        ^degree.notNil.if({
+        resolvedPitch = degree.notNil.if({
             var scale = event['scale'];
             var octave = 5;
             var scaledPitch = 0;
@@ -109,10 +135,15 @@ EventPattern2Fosc {
 
             // Resolve the pitch from the degree + octave
             scaledPitch = scale.degrees.wrapAt(degree) + octave + root;
+
+            // Add midi note transposition
+            scaledPitch + mtranspose;
         }, {
             "Could not resolve pitch".warn;
             60
-        })
+        });
+
+        ^resolvedPitch;
     }
 
     // Resolve the duration of an event
