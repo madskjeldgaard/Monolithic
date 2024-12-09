@@ -1,5 +1,6 @@
 /*
 
+
 Convert an event pattern to a list of Fosc objects,
 allowing to create lilypond scores from SuperCollider patterns.
 
@@ -19,6 +20,7 @@ v.show;
 )
 
 TODO:
+- support modal transposition (mtranspose)
 - This class should really have some automatic tests to ensure it works as expected.
 
 */
@@ -65,8 +67,6 @@ EventPattern2Fosc {
                         duration;
                     });
 
-                    "Chord contains a rest".warn;
-
                     // Make the fosc chord
                     chord = FoscRest.new(writtenDuration: duration.value);
                 }, {
@@ -99,9 +99,14 @@ EventPattern2Fosc {
 
     // Resolve the pitch of an event
     resolveEventPitch {|event|
-        var degree = event['degree'];
+        var degree = event['degree'] ? 0;
         var root = event['root'] ? 0;
+        var scale = event['scale'];
+        var ctranspose = event['ctranspose'] ? 0;
         var mtranspose = event['mtranspose'] ? 0;
+        var hasChromaticTransposition = ctranspose.notNil and: { ctranspose != 0 };
+        var hasmodalTransposition = mtranspose.notNil and: { mtranspose != 0 };
+        var hasScale = scale.notNil;
         var resolvedPitch = 0;
 
         resolvedPitch = degree.notNil.if({
@@ -137,7 +142,29 @@ EventPattern2Fosc {
             scaledPitch = scale.degrees.wrapAt(degree) + octave + root;
 
             // Add midi note transposition
-            scaledPitch + mtranspose;
+            // scaledPitch + ctranspose;
+
+            if(hasChromaticTransposition, {
+                // Chromatic transposition (semitones)
+                scaledPitch = scaledPitch + ctranspose;
+            }, {
+                // modal transposition (scale degrees)
+                if(hasmodalTransposition, {
+                    var scaleDegrees = scale.at(mtranspose);
+                    var numNotesInOctave = scale.size;
+
+                    // If the modal transposition goes beyond the octave, add octave offset
+                    if(mtranspose > numNotesInOctave, {
+                        var octaveOverFlow  = (mtranspose / numNotesInOctave).asInteger;
+                        scaledPitch = scaledPitch + (octaveOverFlow * 12);
+                    });
+
+                    scaledPitch = scaledPitch + scaleDegrees;
+                });
+            });
+
+
+            scaledPitch
         }, {
             "Could not resolve pitch".warn;
             60
