@@ -83,7 +83,7 @@ SimpleMIDIMapper {
         });
 
         // Program change handler
-        MIDIdef.programChange(\midiProgramChangeHandler, { |val, chan|
+        MIDIdef.program(\midiProgramChangeHandler, { |val, chan|
             var key = [\programChange, chan, val];
             this.handleMIDIEvent(key, 1);
         });
