@@ -6,7 +6,6 @@ It includes MIDI Learn functionality to easily map MIDI controls to functions, a
 
 // Example:
 (
-
 // Initialize MIDI
 MIDIClient.init;
 MIDIIn.connectAll;
@@ -17,23 +16,32 @@ MIDIIn.connectAll;
 // Load existing MIDI mappings (if any)
 ~midiController.loadMappings;
 
-"Mapping cc 0 to volume".postln;
-// Example: Map a function to a MIDI control
-~midiController.map(\cc, 0, 1, { |val|
-    var volume = val.linlin(0, 127, 0.0, 1.0);
-    ("Volume set to " ++ volume).postln;
-});
+fork{
 
-"Turn a knob on your MIDI controller to see map it to the rate parameter".postln;
-// Example: Enable MIDI Learn to map a new control
-~midiController.enableMIDILearn({ |val|
-    var rate = val.linexp(0, 127, 0.01, 4.0);
-    ("Rate set to " ++ rate).postln;
-});
+    "Turn a knob on your MIDI controller to map it to the rate parameter".postln;
+    // Example: Enable MIDI Learn to map a new control (blocking)
+    ~midiController.enableMIDILearn({ |val|
+        var rate = val.linexp(0, 127, 0.01, 4.0);
+        ("Rate set to " ++ rate).postln;
+    });
+
+    // Another example: Map a MIDI control to a function
+    "Turn another knob on your MIDI controller to map it to something else".postln;
+    ~midiController.enableMIDILearn({ |val|
+        var rate = val.linexp(0, 127, 0.01, 4.0);
+        ("SOMETHING set to " ++ rate).postln;
+    });
+
+    "MIDI Learn complete!".postln;
+
+}
 
 // Save MIDI mappings to a file
 // ~midiController.saveMappings;
 )
+
+// TODO:
+- Use src to match specific midi devices
 
 */
 SimpleMIDIMapper {
@@ -41,6 +49,8 @@ SimpleMIDIMapper {
     var <midiLearnEnabled = false; // MIDI Learn mode flag
     var <midiLearnCallback; // Callback for MIDI Learn
     var <midiMappingsPath; // Path to save/load MIDI mappings
+    var <midiLearnCondition; // Condition for blocking MIDI Learn
+    var <lastLearnedKey = nil; // Last learned MIDI key
 
     *new { |midiMappingsPath|
         ^super.new.init(midiMappingsPath);
@@ -48,6 +58,7 @@ SimpleMIDIMapper {
 
     init { |path|
         midiActions = Dictionary.new;
+        midiLearnCondition = Condition.new; // Initialize the condition
         midiMappingsPath = path ? "midiMappings.scd"; // Default path for saving/loading mappings
 
         // Set up MIDI handlers
@@ -89,13 +100,13 @@ SimpleMIDIMapper {
         });
 
         // Pitch bend handler
-        MIDIdef.pitchBend(\midiPitchBendHandler, { |val, chan|
+        MIDIdef.bend(\midiPitchBendHandler, { |val, chan|
             var key = [\pitchBend, chan, val];
             this.handleMIDIEvent(key, val);
         });
 
         // Aftertouch handler
-        MIDIdef.aftertouch(\midiAftertouchHandler, { |val, chan|
+        MIDIdef.touch(\midiAftertouchHandler, { |val, chan|
             var key = [\aftertouch, chan, val];
             this.handleMIDIEvent(key, val);
         });
@@ -103,11 +114,35 @@ SimpleMIDIMapper {
 
     // Handle MIDI events
     handleMIDIEvent { |key, val|
+        var ccKey;
+
+        // Check if the key is a ccOn or ccOff and convert it to a cc key for checking
+        if (key[0] == \ccOn || key[0] == \ccOff) {
+            ccKey = [\cc, key[1], key[2]]; // Convert to cc key
+        } {
+            ccKey = key; // Use the original key
+        };
+
         if (midiLearnEnabled && midiLearnCallback.notNil) {
-            // If MIDI Learn is enabled, assign the callback to the key
-            midiActions[key] = midiLearnCallback;
-            midiLearnEnabled = false; // Disable MIDI Learn after mapping
-            ("MIDI mapping learned for " ++ key).postln;
+            // Skip ccOn and ccOff if the corresponding cc key is already mapped
+            if ((key[0] == \ccOn || key[0] == \ccOff) && midiActions[ccKey].notNil) {
+                ("Ignoring ccOn/ccOff for already mapped cc control: " ++ ccKey).postln;
+                ^nil; // Exit the method early
+            };
+
+            // If MIDI Learn is enabled and the key is not the last learned key
+            if (key != lastLearnedKey) {
+                // Assign the callback to the key
+                midiActions[key] = midiLearnCallback;
+                midiLearnEnabled = false; // Disable MIDI Learn after mapping
+                lastLearnedKey = key; // Store the last learned key
+                midiLearnCondition.test = true; // Unblock the condition
+                midiLearnCondition.signal; // Signal that the condition is met
+                ("MIDI mapping learned for " ++ key).postln;
+            } {
+                // Ignore subsequent values from the same control
+                ("Ignoring subsequent value from " ++ key ++ " during MIDI Learn").postln;
+            };
         } {
             // Otherwise, execute the mapped action
             if (midiActions[key].notNil) {
@@ -118,11 +153,15 @@ SimpleMIDIMapper {
         };
     }
 
-    // Enable MIDI Learn mode
+    // Enable MIDI Learn mode with blocking
     enableMIDILearn { |callback|
         midiLearnEnabled = true;
         midiLearnCallback = callback;
+        midiLearnCondition.test = false; // Reset the condition
         "MIDI Learn enabled. Press a MIDI control to map it.".postln;
+
+        // Block execution until a MIDI control is learned
+        midiLearnCondition.wait;
     }
 
     // Map a function to a MIDI control
