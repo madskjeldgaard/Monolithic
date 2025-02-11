@@ -33,7 +33,7 @@ p.set(\freq, 150, \amp, 0.1)
 
 
 */
-Params {
+Params []{
     var <params;
     var <callbackFunction;
 
@@ -66,12 +66,25 @@ Params {
         ^params[key];
     }
 
+    put{|key, value|
+        params.put(key, value);
+        callbackFunction.value(this, params.asKeyValuePairs);
+    }
+
     clear{|key|
         params.remove(key);
     }
 
     clearAll{
         params.clear;
+    }
+
+    asKeyValuePairs{
+        ^params.asKeyValuePairs;
+    }
+
+    asArray{
+        ^this.asKeyValuePairs.asArray;
     }
 
     // Unfolds and sets a synth or object that responds to .set
