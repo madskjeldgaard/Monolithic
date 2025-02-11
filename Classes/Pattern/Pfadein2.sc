@@ -43,14 +43,12 @@ Pfadein2{
     }
 
     init{|inPattern, numChannels, fadeTime|
-        ^Pgroup(Pfx(inPattern, "fadeinsynth%".format(numChannels).asSymbol, \xfadetime, fadeTime));
+        ^Pgroup(Pfxb(inPattern, "fadeinsynth%".format(numChannels).asSymbol, \xfadetime, fadeTime));
     }
 
 }
 
 /*
-// Example
-
 (
 p = Pfadeinout2(Pbind(\degree, Pwhite(0,10), \dur, 4.0, \legato, 2), fadeInTime: 10, fadeOutTime: 2);
 )
@@ -89,10 +87,10 @@ Pfadeinout2{
             }
         })
 
-
     }
 
     init{|inPattern, numChannels, fadeInTime, fadeOutTime|
-        ^Pgroup(Pfx(inPattern, "fadeinoutsynth%".format(numChannels).asSymbol, \fadeInTime, fadeInTime, \fadeOutTime, fadeOutTime));
+        var fxed = Pfx(inPattern, "fadeinoutsynth%".format(numChannels).asSymbol, \fadeInTime, fadeInTime, \fadeOutTime, fadeOutTime);
+        ^Pbus(fxed, dur: fadeOutTime + 0.1);
     }
 }

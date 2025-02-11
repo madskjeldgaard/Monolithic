@@ -105,7 +105,7 @@ EventPattern2Fosc {
         var ctranspose = event['ctranspose'] ? 0;
         var mtranspose = event['mtranspose'] ? 0;
         var hasChromaticTransposition = ctranspose.notNil and: { ctranspose != 0 };
-        var hasmodalTransposition = mtranspose.notNil and: { mtranspose != 0 };
+        var hasModalTransposition = mtranspose.notNil and: { mtranspose != 0 };
         var hasScale = scale.notNil;
         var resolvedPitch = 0;
 
@@ -128,7 +128,6 @@ EventPattern2Fosc {
             // Resolve the octave
             if(scale.notNil, {
                 var numNotesInOctave = scale.pitchesPerOctave;
-
                 octave = octave * numNotesInOctave;
             }, {
                 // Default to 12 notes in an octave
@@ -141,30 +140,38 @@ EventPattern2Fosc {
             // Resolve the pitch from the degree + octave
             scaledPitch = scale.degrees.wrapAt(degree) + octave + root;
 
-            // Add midi note transposition
-            // scaledPitch + ctranspose;
+            // Prioritize modal transposition (mtranspose)
+            if(hasModalTransposition, {
+                var scaleDegrees = mtranspose.isArray.if({
+                    mtranspose.collect { |mt| scale.at(mt) }
+                }, {
+                    [scale.at(mtranspose)]
+                });
 
-            if(hasChromaticTransposition, {
-                // Chromatic transposition (semitones)
-                scaledPitch = scaledPitch + ctranspose;
+                var numNotesInOctave = scale.size;
+
+                // If the modal transposition goes beyond the octave, add octave offset
+                scaleDegrees = scaleDegrees.collect { |scaleDegree|
+                    var octaveOverFlow  = (scaleDegree / numNotesInOctave).asInteger;
+
+                    // as semitones
+                    octaveOverFlow = octaveOverFlow * 12;
+
+                    // Correct scale degree for the octave overflow
+                    scaleDegree + octaveOverFlow
+                };
+
+                scaledPitch = scaledPitch + scaleDegrees;
+
             }, {
-                // modal transposition (scale degrees)
-                if(hasmodalTransposition, {
-                    var scaleDegrees = scale.at(mtranspose);
-                    var numNotesInOctave = scale.size;
-
-                    // If the modal transposition goes beyond the octave, add octave offset
-                    if(mtranspose > numNotesInOctave, {
-                        var octaveOverFlow  = (mtranspose / numNotesInOctave).asInteger;
-                        scaledPitch = scaledPitch + (octaveOverFlow * 12);
-                    });
-
-                    scaledPitch = scaledPitch + scaleDegrees;
+                // Chromatic transposition (semitones)
+                if(hasChromaticTransposition, {
+                    scaledPitch = scaledPitch + ctranspose;
                 });
             });
 
-
             scaledPitch
+
         }, {
             "Could not resolve pitch".warn;
             60

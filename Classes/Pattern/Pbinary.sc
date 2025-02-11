@@ -19,11 +19,34 @@ Pbinary{
     init{|list, repeats|
 
         // Convert all 0 to Rest
-        list = list.collect{|val| if(val == 0, {Rest()}, {val})}
+        list = list.collect{|val| if(val.asInteger == 0, {Rest()}, {val})}
 
         ^Pseq(list, repeats);
     }
 
+}
+
+PbinaryGate : Pn {
+    *new { arg pattern, repeats=inf, key;
+        ^super.new(pattern).repeats_(repeats).key_(key)
+    }
+
+    storeArgs { ^[pattern, repeats, key] }
+
+    embedInStream { | event |
+        var stream, output;
+        repeats.do {
+            stream = pattern.asStream;
+            output = nil;  // force new value for every repeat
+            while {
+                if (event[key] == true or: { output.isNil }) { output = stream.next(event) };
+                output.notNil;
+            } {
+                event = output.copy.embedInStream(event)
+            }
+        };
+        ^event;
+    }
 }
 
 +Array{

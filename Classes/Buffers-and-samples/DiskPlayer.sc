@@ -159,7 +159,6 @@ DiskPlayer{
                     thisRate = rate.value();
                 };
 
-
                 "Playing index %".format(index).postln;
 
                 dur = this.play(index, thisRate, fadeTime);
