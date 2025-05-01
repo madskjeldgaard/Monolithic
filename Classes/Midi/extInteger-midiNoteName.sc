@@ -162,3 +162,9 @@ MidiNoteNames[] {
         ^this.collect{|each| each.midiNoteName}
     }
 }
+
++String{
+    asMidiNoteNumber{
+        ^MidiNoteNames.note(this)
+    }
+}
