@@ -265,4 +265,8 @@ Pcontrol [] {
             })
         }
     }
+
+    gui{
+        ^PcontrolGui.new(this)
+    }
 }

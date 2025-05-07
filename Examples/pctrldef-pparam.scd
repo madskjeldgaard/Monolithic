@@ -20,7 +20,7 @@ Pctrldef(\yo, {|ctrl|
 
 s.waitForBoot{
     s.sync;
-    Pctrldef(\yo).play;
+    Pctrldef(\yo).gui;
 };
 )
 
