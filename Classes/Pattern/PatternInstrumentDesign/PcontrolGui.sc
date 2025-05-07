@@ -8,7 +8,7 @@ EXAMPLE:
 
 // Create a Pcontrol
 p = Pcontrol.new({ |pc|
-    pc.addParam(\degree, 0, [-10,10].asSpec);
+    pc.addParam(\degree, 0, [-10,10, \lin, 1].asSpec);
     pc.addParam(\amp, 0.1, [0, 1, \lin].asSpec);
     pc.addParam(\scale, Scale.major, [Scale.minor, Scale.major, Scale.melodicMinor]);
 
