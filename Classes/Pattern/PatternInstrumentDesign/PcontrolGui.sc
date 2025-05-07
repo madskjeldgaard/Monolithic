@@ -8,18 +8,20 @@ EXAMPLE:
 
 // Create a Pcontrol
 p = Pcontrol.new({ |pc|
-    pc.addParam(\freq, 440, [20, 20000, \exp].asSpec);
+    pc.addParam(\degree, 0, [-10,10].asSpec);
     pc.addParam(\amp, 0.1, [0, 1, \lin].asSpec);
+    pc.addParam(\scale, Scale.major, [Scale.minor, Scale.major, Scale.melodicMinor]);
 
     Pbind(
-        \freq, pc.at(\freq).trace,
+        \scale, pc[\scale].trace,
+        \degree,  pc[\degree].trace,
         \amp, pc.at(\amp).trace,
-        \dur, 0.25
+        \dur, 0.25,
     )
 });
 
 // Create and show the GUI
-g = PcontrolGui.new(p);
+g = p.gui;
 
 )
 */
