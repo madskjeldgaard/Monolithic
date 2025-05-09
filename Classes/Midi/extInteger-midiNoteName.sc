@@ -149,11 +149,57 @@ MidiNoteNames[] {
     }
 }
 
+PitchClassCalculator {
+    classvar choices ;
+
+    *initClass{
+choices = [
+        'C',
+        'C#',
+        'D',
+        'D#',
+        'E',
+        'F',
+        'F#',
+        'G',
+        'G#',
+        'A',
+        'A#',
+        'B'
+    ]
+    }
+
+    // convert note name or number to pitch class (midi note name with no numbers)
+    *pitchClass{|noteNumber|
+        var index = this.midiNoteToRootNote(noteNumber);
+        var pitchClass = choices[index];
+
+        ^pitchClass
+    }
+
+    *midiNoteToRootNote{|noteNumber|
+        ^noteNumber.asInteger % 12
+    }
+}
+
 +Integer{
     midiNoteName{
         var index = this;
 
         ^MidiNoteNames.items[index];
+    }
+
+   midi2RootNote{
+        var index = this;
+        ^PitchClassCalculator.midiNoteToRootNote(index)
+    }
+
+    asMidiNoteName{
+        ^this.midiNoteName
+    }
+
+    asPitchClass{
+        ^PitchClassCalculator.pitchClass(this)
     }
 }
 
@@ -166,5 +212,13 @@ MidiNoteNames[] {
 +String{
     asMidiNoteNumber{
         ^MidiNoteNames.note(this)
+    }
+
+    asMidiNoteName{
+        ^MidiNoteNames.note(this)
+    }
+
+    asPitchClass{
+        ^PitchClassCalculator.pitchClass(this)
     }
 }
