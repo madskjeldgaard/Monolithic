@@ -30,12 +30,17 @@ DiskPlayer{
 
     var bufferSize = 65536;
 
+    // Contains all synth params
+    var <state;
+
     *new{|diskPath, numChannels=2|
         ^super.new.init(diskPath, numChannels);
     }
 
     init{|diskPath, numChannels|
         var pathIsFolder;
+
+        state = Dictionary.new;
 
         numChans = numChannels;
         path = diskPath;
@@ -46,7 +51,7 @@ DiskPlayer{
 
         synthDescName = "monolithic_diskplayer%".format(numChannels).asSymbol;
 
-        SynthDef(synthDescName,{|out=0, duration=1, amp=0.85, buffer, loop=0, rate=1, fadeDuration=0.01|
+        SynthDef(synthDescName,{|out=0, duration=1, amp=0.85, buffer, loop=0, rate=1, fadeDuration=0.01, gate=1, slideTime=0.1|
             var rateScalar = BufRateScale.kr(buffer);
             var fadeTime = fadeDuration;
 
@@ -54,20 +59,69 @@ DiskPlayer{
                 levels: [0,1,1,0],
                 times: [fadeTime, duration - fadeTime, fadeTime],
                 curve: [\sine, 0, \sine],
-                // releaseNode: 2 // Use this to make it gated
-            ).ar(gate: 1, doneAction: Done.freeSelf);
+                releaseNode: 2 // Use this to make it gated
+            ).ar(gate: gate, doneAction: Done.freeSelf);
 
-            var sig = VDiskIn.ar(numChannels: numChannels, bufnum: buffer, rate: rate * rateScalar, loop: loop);
+            var sig = VDiskIn.ar(numChannels: numChannels, bufnum: buffer, rate: rate.lag(slideTime) * rateScalar, loop: loop);
 
-            sig = sig * envelope * amp;
+            sig = sig * envelope * amp.lag(slideTime);
 
             Out.ar(out, sig)
         }).add;
 
         buffer = Buffer.alloc(server: server, numFrames: bufferSize, numChannels: numChannels);
+
+        this.set(
+            \loop, 0,
+            \amp, 0.85,
+            \rate, 1,
+            \fadeDuration, 0.01,
+            \gate, 1,
+            \buffer, buffer.bufnum,
+            \out, 0,
+        )
     }
 
-    play{|fileIndex=0, rate=1, fadeTime=0.01|
+    synth{
+        ^playingSynth
+    }
+
+    set{|...keysValues|
+        keysValues.clump(2).do{|pair|
+            var key = pair[0];
+            var value = pair[1];
+            state[key] = value;
+            if(playingSynth.notNil, {
+                playingSynth.set(key, value);
+            })
+        };
+    }
+
+    setVolume{|vol|
+        this.set(\amp, vol);
+    }
+
+    setRate{|rate|
+        this.set(\rate, rate);
+    }
+
+    setLoop{|loop|
+        this.set(\loop, loop);
+    }
+
+    setFadeDuration{|fadeDuration|
+        this.set(\fadeDuration, fadeDuration);
+    }
+
+    setOutput{|output|
+        this.set(\out, output);
+    }
+
+    setSlideTime{|slideTime|
+        this.set(\slideTime, slideTime);
+    }
+
+    play{|fileIndex=0|
         var synthArgs;
         var dur;
 
@@ -81,10 +135,6 @@ DiskPlayer{
         // Get the sound file name
         playingSoundfile = filesInFolder[fileIndex];
 
-        dur = playingSoundfile.duration / rate;
-
-        "Playing file %: Duration % (rate %)".format(playingSoundfile.path, dur, rate).postln;
-
         playingSynth = Synth.basicNew(synthDescName);
 
         // Cue in the buffer
@@ -97,11 +147,9 @@ DiskPlayer{
             completionMessage: {|thisBuffer|
                 "Buffer loaded".postln;
 
-                synthArgs = [
+                synthArgs = state.asKeyValuePairs ++ [
                     \buffer, thisBuffer,
-                    \rate, rate,
-                    \duration, playingSoundfile.duration / rate,
-                    \fadeDuration, fadeTime,
+                    \duration, playingSoundfile.duration / (state[\rate] ? 1),
                 ];
 
                 playingSynth.newMsg(server, synthArgs, \addToTail);
@@ -113,7 +161,11 @@ DiskPlayer{
     }
 
     stop{
-        playingSynth.free;
+        if(playingSynth.notNil, {
+            playingSynth.release;
+            playingSynth = nil;
+        });
+
     }
 
     next{
