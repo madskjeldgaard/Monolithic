@@ -12,3 +12,9 @@
         ^this.asString.asRoot
     }
 }
+
++ Integer {
+    asRoot{
+        ^this
+    }
+}
