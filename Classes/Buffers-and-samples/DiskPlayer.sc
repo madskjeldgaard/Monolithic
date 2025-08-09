@@ -51,7 +51,7 @@ DiskPlayer{
 
         synthDescName = "monolithic_diskplayer%".format(numChannels).asSymbol;
 
-        SynthDef(synthDescName,{|out=0, duration=1, amp=0.85, buffer, loop=0, rate=1, fadeDuration=0.01, gate=1, slideTime=0.1|
+        SynthDef(synthDescName,{|out=0, duration=1, amp=0.85, buffer, loop=0, rate=1, fadeDuration=0.01, gate=1, slideTime=0.1, lowcut=40|
             var rateScalar = BufRateScale.kr(buffer);
             var fadeTime = fadeDuration;
 
@@ -66,6 +66,9 @@ DiskPlayer{
 
             sig = sig * envelope * amp.lag(slideTime);
 
+            // Lowcut
+            sig = HPF.ar(sig, lowcut.clip(10.0, 20000.0).lag(slideTime));
+
             Out.ar(out, sig)
         }).add;
 
@@ -75,10 +78,12 @@ DiskPlayer{
             \loop, 0,
             \amp, 0.85,
             \rate, 1,
-            \fadeDuration, 0.01,
+            \fadeDuration, 1.0,
             \gate, 1,
             \buffer, buffer.bufnum,
             \out, 0,
+            \lowcut, 40,
+            \slideTime, 0.1,
         )
     }
 
@@ -119,6 +124,10 @@ DiskPlayer{
 
     setSlideTime{|slideTime|
         this.set(\slideTime, slideTime);
+    }
+
+    setLowcut{|lowcut|
+        this.set(\lowcut, lowcut);
     }
 
     play{|fileIndex=0|
