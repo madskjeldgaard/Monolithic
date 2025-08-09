@@ -50,40 +50,88 @@ PcontrolGui {
     var interpolateButton, interpolationTimeBox;
     var loadPresetsButton, savePresetsButton;
     var savePresetNameInput;
+    var limitScheduler, specAddedFunc;
 
     *new { | pcontrol, limitUpdateRate = 0, show = true, collapseArrays = false |
-        ^super.newCopyArgs(pcontrol, collapseArrays).init(limitUpdateRate, show)
-    }
+    ^super.newCopyArgs(pcontrol, collapseArrays).init(limitUpdateRate, show)
+}
 
-    init { | limitUpdateRate, show |
-        this.initFonts();
+init { | limitUpdateRate, show |
+    this.initFonts();
 
-        params = IdentityDictionary.new();
-        paramViews = IdentityDictionary.new();
+    params = IdentityDictionary.new();
+    paramViews = IdentityDictionary.new();
 
-        window = Window.new(pcontrol.class.name);
-        window.layout = VLayout.new(
-            this.makeInfoSection(),
-            this.makeTransportSection(),
-            // parameterSection gets added here in makeParameterSection
-        );
+    window = Window.new(pcontrol.class.name);
+    window.layout = VLayout.new(
+        this.makeInfoSection(),
+        this.makeTransportSection(),
+        // parameterSection gets added here in makeParameterSection
+    );
 
-        window.view.children.do{ | c | c.font = if(c == header, headerFont, font) };
+    window.view.children.do{ | c | c.font = if(c == header, headerFont, font) };
 
-        this.setUpDependencies(limitUpdateRate.max(0));
+    this.setUpDependencies(limitUpdateRate.max(0));
 
-        this.makeParameterSection();
+    this.makeParameterSection();
 
-        if(show) {
-            window.front;
+    // --- Add GUI as dependant to pcontrol for live updates ---
+    if(pcontrol.respondsTo(\addDependant)) {
+        pcontrol.addDependant(this);
+    };
+
+    if(show) {
+        window.front;
+    };
+
+    window.onClose = {
+        limitScheduler.stop;
+        if(pcontrol.respondsTo(\removeDependant)) {
+            pcontrol.removeDependant(this);
+        };
+
+        Spec.removeDependant(specAddedFunc);
+        params.do{ | spec | spec.removeDependant(specChangedFunc) };
+    };
+
+}
+
+// Respond to dependency updates from pcontrol
+update { |obj ...args|
+    // args[0] could be a symbol like \set, \source, etc.
+    // Just refresh all parameter widgets from pcontrol state
+    this.updateAllParamsFromPcontrol;
+}
+
+// update all GUI widgets from pcontrol state
+updateAllParamsFromPcontrol {
+    params.keysValuesDo { |key, spec|
+        var val = pcontrol.params[key].source;
+        if(paramViews[key].notNil) {
+            case
+            { paramViews[key][\type] == \number } {
+                paramViews[key][\numBox].value_(spec.constrain(val));
+                paramViews[key][\slider].value_(spec.unmap(val));
+            }
+            { paramViews[key][\type] == \array } {
+                var idx = spec.array.indexOf(val) ? 0;
+                paramViews[key][\slider].value_(idx);
+            }
         }
-    }
+    };
+    // Also update quantBox and play button
+    if(quantBox.notNil) {
+        quantBox.value_(pcontrol.patternProxy.quant ? 0);
+    };
+    if(play.notNil) {
+        play.value_(pcontrol.isPlaying.binaryValue);
+    };
+}
 
 	asView { ^window.asView }
 
 	setUpDependencies { | limitUpdateRate |
-		var limitOrder, limitDict, limitScheduler;
-		var specAddedFunc;
+		var limitOrder, limitDict;
 
 		specAddedFunc = { | obj ...args |
 			var key, spec;
@@ -130,7 +178,6 @@ PcontrolGui {
 
 		});
 
-		Spec.addDependant(specAddedFunc);
 		// TODO: Add dependants to pcontrol if needed
 		// pcontrol.addDependant(pcontrolChangedFunc);
 

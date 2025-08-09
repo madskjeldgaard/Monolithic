@@ -105,6 +105,7 @@ Pcontrol [] {
     mapOne{|key, value|
         if(params[key].notNil, {
             params[key].map(value);
+            this.changed(key, [key, value]);
         }, {
             "%: param % not found".format(this.class.name, key).warn;
         })
@@ -127,7 +128,9 @@ Pcontrol [] {
                 });
 
                 patternProxy.source = result;
-            })
+            });
+
+            this.changed(\source, [\source, result]);
         }, {
             "%: wrapFunc must be a function".format(this.class.name).error;
         })
@@ -302,6 +305,7 @@ Pcontrol [] {
                 if (params[key].notNil) {
                     params[key].source = preset[key][\value];
                     params[key].spec = preset[key][\spec];
+                    this.changed(key, [key, preset[key][\value]]);
                 };
             };
             currentPresetName = name;
