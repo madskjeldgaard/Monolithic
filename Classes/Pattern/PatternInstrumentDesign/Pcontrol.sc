@@ -6,6 +6,9 @@ Pcontrol [] {
 
     var <>params;
     var <>patternProxy, <patternProxyPlayer;
+    var <>presets; // Dictionary to store presets
+    var <>currentPresetName; // Name of current preset
+    var <>interpolationTime = 1.0; // Default interpolation time
 
     var toggleState = true;
 
@@ -21,6 +24,8 @@ Pcontrol [] {
     init{|wrapFunc|
         params = IdentityDictionary.new;
         // patternProxy = patternProxy ? EventPatternProxy.new;
+        presets = IdentityDictionary.new; // Initialize presets dictionary
+        currentPresetName = nil;
 
         if(wrapFunc.notNil, {
             this.source_(wrapFunc)
@@ -178,17 +183,17 @@ Pcontrol [] {
     // Change using past value
     Pctrldef(\yoyoy).change(\dur, Pkey(\dur)*0.5)
 
-     */
+    */
 
-     change{|...keyValuePairs|
-         keyValuePairs.arePairs.if({
-             keyValuePairs.pairsDo{|key, value|
-                 this.changeOne(key, value)
-             }
-         }, {
-             "change expects pairs".warn;
-         })
-     }
+    change{|...keyValuePairs|
+        keyValuePairs.arePairs.if({
+            keyValuePairs.pairsDo{|key, value|
+                this.changeOne(key, value)
+            }
+        }, {
+            "change expects pairs".warn;
+        })
+    }
 
 
     changeOne{|patternKey, newValue|
@@ -268,5 +273,121 @@ Pcontrol [] {
 
     gui{
         ^PcontrolGui.new(this)
+    }
+
+    // PRESETS
+
+    // Save current parameter values as a preset
+    savePreset {|name|
+        var preset = IdentityDictionary.new;
+
+        params.keysDo {|key|
+            preset[key] = (
+                value: params[key].source,
+                spec: params[key].spec
+            );
+        };
+
+        presets[name] = preset;
+        currentPresetName = name;
+        ^"Preset '%' saved".format(name).postln;
+    }
+
+    // Recall a preset immediately
+    recallPreset {|name|
+        var preset = presets[name];
+
+        if (preset.notNil) {
+            preset.keysDo {|key|
+                if (params[key].notNil) {
+                    params[key].source = preset[key][\value];
+                    params[key].spec = preset[key][\spec];
+                };
+            };
+            currentPresetName = name;
+            ^"Preset '%' recalled".format(name).postln;
+        } {
+            ^"Preset '%' not found".format(name).warn;
+        };
+    }
+
+    // Interpolate between current values and a preset
+    interpolateToPreset {|name, time|
+        var preset = presets[name];
+        var interpolationTime = time ? this.interpolationTime;
+
+        if (preset.notNil) {
+            preset.keysDo {|key|
+                if (params[key].notNil) {
+                    var targetVal = preset[key][\value];
+                    var currentVal = params[key].source;
+
+                    // Only interpolate if types match
+                    if (targetVal.class == currentVal.class) {
+                        params[key].source = currentVal.blend(targetVal, interpolationTime);
+                    } {
+                        // If types don't match, just set immediately
+                        params[key].source = targetVal;
+                    };
+
+                    // Always update spec
+                    params[key].spec = preset[key][\spec];
+                };
+            };
+            currentPresetName = name;
+            ^"Interpolating to preset '%' over % seconds".format(name, interpolationTime).postln;
+        } {
+            ^"Preset '%' not found".format(name).warn;
+        };
+    }
+
+    // Get list of preset names
+    getPresetNames {
+        ^presets.keys.asArray;
+    }
+
+    // Delete a preset
+    deletePreset {|name|
+        if (presets[name].notNil) {
+            presets.removeAt(name);
+            if (currentPresetName == name) { currentPresetName = nil };
+            ^"Preset '%' deleted".format(name).postln;
+        } {
+            ^"Preset '%' not found".format(name).warn;
+        };
+    }
+
+    // Save all presets to disk
+    savePresetsToFile {|path|
+        var file = File(path, "w");
+        var data = (
+            presets: presets,
+            interpolationTime: interpolationTime
+        );
+
+        file.write(data.asCompileString);
+        file.close;
+        ^"Presets saved to %".format(path).postln;
+    }
+
+    // Load presets from disk
+    loadPresetsFromFile {|path|
+        var file = File(path, "r");
+        var data, newPresets;
+
+        if (file.isOpen) {
+            data = file.readAllString.interpret;
+            file.close;
+
+            if (data[\presets].notNil) {
+                presets = data[\presets];
+                interpolationTime = data[\interpolationTime] ? 1.0;
+                ^"Presets loaded from %".format(path).postln;
+            } {
+                ^"No presets found in file".warn;
+            };
+        } {
+            ^"Could not open file %".format(path).warn;
+        };
     }
 }

@@ -46,6 +46,11 @@ PcontrolGui {
 
     var pcontrolChangedFunc, specChangedFunc;
 
+    var presetPopup, savePresetButton, recallPresetButton, deletePresetButton;
+    var interpolateButton, interpolationTimeBox;
+    var loadPresetsButton, savePresetsButton;
+    var savePresetNameInput;
+
     *new { | pcontrol, limitUpdateRate = 0, show = true, collapseArrays = false |
         ^super.newCopyArgs(pcontrol, collapseArrays).init(limitUpdateRate, show)
     }
@@ -209,85 +214,206 @@ PcontrolGui {
 		)
 	}
 
-	makeTransportSection {
-		var clear, send, scope, free, popup;
+    makeTransportSection {
+        var clear, send, scope, free, popup;
+        var presetSection;
 
-		play = Button.new()
-		.states_([
-			["play"],
-			["stop", Color.black, Color.grey(0.5, 0.5)],
-		])
-		.action_({ | obj |
-			if(obj.value == 1, {
-				pcontrol.play
-			}, {
-				pcontrol.stop
-			})
-		})
-		.value_(pcontrol.isPlaying.binaryValue);
+        play = Button.new()
+        .states_([
+            ["play"],
+            ["stop", Color.black, Color.grey(0.5, 0.5)],
+        ])
+        .action_({ | obj |
+            if(obj.value == 1, {
+                pcontrol.play
+            }, {
+                pcontrol.stop
+            })
+        })
+        .value_(pcontrol.isPlaying.binaryValue);
 
-		clear = Button.new()
-		.states_(#[
-			["clear"]
-		])
-		.action_({ | obj |
-			pcontrol.patternProxy.clear;
-		});
+        clear = Button.new()
+        .states_(#[
+            ["clear"]
+        ])
+        .action_({ | obj |
+            pcontrol.patternProxy.clear;
+        });
 
-		send = Button.new()
-		.states_(#[
-			["send"]
-		])
-		.action_({ | obj |
-			pcontrol.patternProxy.send;
-		});
+        send = Button.new()
+        .states_(#[
+            ["send"]
+        ])
+        .action_({ | obj |
+            pcontrol.patternProxy.send;
+        });
 
-		scope = Button.new()
-		.states_(#[
-			["scope"]
-		])
-		.action_({ | obj |
-			pcontrol.patternProxy.scope;
-		});
+        scope = Button.new()
+        .states_(#[
+            ["scope"]
+        ])
+        .action_({ | obj |
+            pcontrol.patternProxy.scope;
+        });
 
-		free = Button.new()
-		.states_(#[
-			["free"]
-		])
-		.action_({ | obj |
-			pcontrol.patternProxy.free;
-		});
+        free = Button.new()
+        .states_(#[
+            ["free"]
+        ])
+        .action_({ | obj |
+            pcontrol.patternProxy.free;
+        });
 
-		popup = PopUpMenu.new()
-		.allowsReselection_(true)
-		.items_(#[
-			"defaults",
-			"randomize parameters",
-			"vary parameters",
-			"document",
-			"post",
-		])
-		.action_({ | obj |
-			switch(obj.value,
-				0, { this.defaults() },
-				1, { this.randomize() },
-				2, { this.vary() },
-				3, { pcontrol.patternProxy.document },
-				4, { pcontrol.patternProxy.asCode.postln },
-			)
-		})
-		.keyDownAction_({ | obj, char |
-			if(char == Char.ret, {
-				obj.doAction
-			})
-		})
-		.canFocus_(true)
-		.fixedWidth_(25);
+        popup = PopUpMenu.new()
+        .allowsReselection_(true)
+        .items_(#[
+            "defaults",
+            "randomize parameters",
+            "vary parameters",
+            "document",
+            "post",
+        ])
+        .action_({ | obj |
+            switch(obj.value,
+                0, { this.defaults() },
+                1, { this.randomize() },
+                2, { this.vary() },
+                3, { pcontrol.patternProxy.document },
+                4, { pcontrol.patternProxy.asCode.postln },
+            )
+        })
+        .keyDownAction_({ | obj, char |
+            if(char == Char.ret, {
+                obj.doAction
+            })
+        })
+        .canFocus_(true)
+        .fixedWidth_(25);
 
-		^HLayout.new(
-			play, clear, free, scope, send, popup
-		)
-	}
+        // === PRESET SECTION ===
+        presetPopup = PopUpMenu.new()
+        .items_(pcontrol.getPresetNames ? #["No Presets"])
+        .action_({ |pop|
+            if(pop.items.size > 0) {
+                var presetName = pop.items[pop.value];
+                pcontrol.currentPresetName = presetName;
+                pcontrol.recallPreset(presetName)
+            }
+        })
+        .toolTip_("Select preset");
+
+        savePresetNameInput = TextField.new()
+        .string_("preset_%".format(Date.localtime.stamp));
+
+        savePresetButton = Button.new()
+        .states_([["Save"]])
+        .action_({
+            var name = savePresetNameInput.string;
+            if(name != "" and: { name.notNil }, {
+                pcontrol.savePreset(name.asSymbol);
+                savePresetNameInput.string = "preset_%".format(Date.localtime.stamp);
+                this.updatePresetPopup();
+            })
+        })
+        .toolTip_("Save current settings as preset");
+
+        recallPresetButton = Button.new()
+        .states_([["Recall"]])
+        .action_({
+            if(presetPopup.items.size > 0) {
+                pcontrol.recallPreset(presetPopup.items[presetPopup.value]);
+            }
+        })
+        .toolTip_("Recall selected preset");
+
+        // deletePresetButton = Button.new()
+        // .states_([["Delete"]])
+        // .action_({
+        //     if(presetPopup.items.size > 0) {
+        //         var name = presetPopup.items[presetPopup.value];
+        //         if(QueryBox("Delete preset '%'?".format(name), "Confirm").value) {
+        //             pcontrol.deletePreset(name);
+        //             this.updatePresetPopup();
+        //         }
+        //     }
+        // })
+        // .toolTip_("Delete selected preset");
+
+        // interpolateButton = Button.new()
+        // .states_([["Interpolate"]])
+        // .action_({
+        //     if(presetPopup.items.size > 0) {
+        //         pcontrol.interpolateToPreset(
+        //             presetPopup.items[presetPopup.value],
+        //             interpolationTimeBox.value
+        //         );
+        //     }
+        // })
+        // .toolTip_("Interpolate to selected preset");
+
+        interpolationTimeBox = NumberBox.new()
+        .value_(1.0)
+        .clipLo_(0.0)
+        .decimals_(2)
+        .step_(0.1)
+        .fixedWidth_(40)
+        .toolTip_("Interpolation time (seconds)");
+
+        loadPresetsButton = Button.new()
+        .states_([["Load file"]])
+        .action_({
+            Dialog.openPanel({ |path|
+                pcontrol.loadPresetsFromFile(path);
+                this.updatePresetPopup();
+            });
+        })
+        .toolTip_("Load presets from file");
+
+        savePresetsButton = Button.new()
+        .states_([["Save file"]])
+        .action_({
+            Dialog.savePanel({ |path|
+                pcontrol.savePresetsToFile(path);
+            });
+        })
+        .toolTip_("Save all presets to file");
+
+        presetSection = VLayout(
+            HLayout(
+                [StaticText().string_("Presets:"), s:1],
+                savePresetNameInput,
+                savePresetButton,
+                recallPresetButton,
+                // deletePresetButton
+            ),
+            HLayout(
+                presetPopup,
+                // interpolateButton,
+                // interpolationTimeBox
+            ),
+            HLayout(
+                loadPresetsButton,
+                savePresetsButton
+            )
+        );
+
+        ^VLayout(
+            HLayout(
+                play, clear, free, scope, send, popup
+            ),
+            presetSection
+        )
+    }
+
+    updatePresetPopup {
+        var names = pcontrol.getPresetNames;
+        var currentIndex = names.indexOf(pcontrol.currentPresetName) ? 0;
+
+        presetPopup.items = names;
+        if(names.size > 0) {
+            presetPopup.value = currentIndex;
+        };
+    }
 
 	makeParameterSection {
 		var excluded = defaultExcludeParams ++ prExcludeParams;
