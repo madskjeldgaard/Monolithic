@@ -6,6 +6,7 @@ This is useful to simplify maintaining state in between synths spawning and dyin
 
 EXAMPLE:
 
+
 (
 s.waitForBoot{
     SynthDef(\sine, {|freq=440, amp=0.5| Out.ar(0, SinOsc.ar(freq)*amp)}).add;

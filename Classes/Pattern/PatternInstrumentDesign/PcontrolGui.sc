@@ -344,20 +344,30 @@ PcontrolGui {
                 valueDisplay = StaticText.new()
                 .string_(arrayChoices[currentIndex].asString);
 
-                slider = Slider.new()
-                .orientation_(\horizontal)
-                .value_(currentIndex / (numChoices - 1).max(0))
-                .step_(1/(numChoices-1))
-                .action_({ |sl|
-                    var index = (sl.value * (numChoices - 1)).round(1).asInteger;
+                // slider = Slider.new()
+                // .orientation_(\horizontal)
+                // .value_(currentIndex / (numChoices - 1).max(0))
+                // .step_(1/(numChoices-1))
+                // .action_({ |sl|
+                //     var index = (sl.value * (numChoices - 1)).round(1).asInteger;
+                //     var val = arrayChoices[index];
+                //     valueDisplay.string_(val.asString);
+                //     pcontrol.setRawOne(key, val);
+                // });
+
+                slider = ListView()
+                .items_(arrayChoices.collect{ | item | item.asString })
+                .value_(currentIndex)
+                .action_({ | lv |
+                    var index = lv.value;
                     var val = arrayChoices[index];
-                    valueDisplay.string_(val.asString);
+                    // valueDisplay.string_(val.asString);
                     pcontrol.setRawOne(key, val);
                 });
 
                 paramViews.put(key, (type: \array, slider: slider, display: valueDisplay));
 
-                layout.add(valueDisplay, 1);
+                // layout.add(valueDisplay, 1);
                 layout.add(slider, 4);
             }
             // For regular number parameters
