@@ -262,7 +262,7 @@ updateAllParamsFromPcontrol {
 	}
 
     makeTransportSection {
-        var clear, send, scope, free, popup;
+        var clear, send, scope, free, popup, randomize;
         var presetSection;
 
         play = Button.new()
@@ -287,55 +287,137 @@ updateAllParamsFromPcontrol {
             pcontrol.patternProxy.clear;
         });
 
-        send = Button.new()
-        .states_(#[
-            ["send"]
+        randomize = Button.new()
+        .states_([
+            ["randomize"]
         ])
         .action_({ | obj |
-            pcontrol.patternProxy.send;
+            this.randomizeAll();
         });
 
-        scope = Button.new()
-        .states_(#[
-            ["scope"]
-        ])
-        .action_({ | obj |
-            pcontrol.patternProxy.scope;
-        });
 
-        free = Button.new()
-        .states_(#[
-            ["free"]
-        ])
-        .action_({ | obj |
-            pcontrol.patternProxy.free;
-        });
+        // send = Button.new()
+        // .states_(#[
+        //     ["send"]
+        // ])
+        // .action_({ | obj |
+        //     pcontrol.patternProxy.send;
+        // });
+
+        // scope = Button.new()
+        // .states_(#[
+        //     ["scope"]
+        // ])
+        // .action_({ | obj |
+        //     pcontrol.patternProxy.scope;
+        // });
+
+        // free = Button.new()
+        // .states_(#[
+        //     ["free"]
+        // ])
+        // .action_({ | obj |
+        //     pcontrol.patternProxy.free;
+        // });
 
         popup = PopUpMenu.new()
         .allowsReselection_(true)
         .items_(#[
-            "defaults",
-            "randomize parameters",
-            "vary parameters",
-            "document",
-            "post",
+            "file",
+            "export as midi",
+            "load preset file",
+            "save preset file"
         ])
         .action_({ | obj |
             switch(obj.value,
-                0, { this.defaults() },
-                1, { this.randomize() },
-                2, { this.vary() },
-                3, { pcontrol.patternProxy.document },
-                4, { pcontrol.patternProxy.asCode.postln },
-            )
-        })
-        .keyDownAction_({ | obj, char |
-            if(char == Char.ret, {
-                obj.doAction
-            })
-        })
-        .canFocus_(true)
-        .fixedWidth_(25);
+                0, { },
+                1, {
+                    // Prompt for file name
+                    var bpm, duration;
+                    var window = Window("Export MIDI", Rect(100, 100, 300, 150));
+                    var bpmBox, durationBox, exportButton;
+                    var bpmLabel, durationLabel;
+
+                    bpm = TempoClock.default.tempo * 60; // Convert BPM to seconds
+                    duration = 16; // Default duration in seconds
+
+                    bpmBox = NumberBox.new()
+                    .value_(bpm)
+                    .clipLo_(1)
+                    .decimals_(0)
+                    .step_(1)
+                    .action_({ | obj |
+                        bpm = obj.value;
+                    });
+
+                    bpmLabel = StaticText.new()
+                    .string_("BPM:");
+                    durationBox = NumberBox.new()
+                    .value_(duration)
+                    .clipLo_(0)
+                    .decimals_(2)
+                    .step_(0.1)
+                    .action_({ | obj |
+                        duration = obj.value;
+                    });
+
+                    durationLabel = StaticText.new()
+                    .string_("Duration (seconds):");
+
+                    // Export button
+                    exportButton = Button.new()
+                    .states_(["Export"])
+                    .action_({ | btn |
+                        if(btn.value == 0, {
+                            if(bpm.notNil and: { duration.notNil }, {
+                                Dialog.savePanel(okFunc: { |path|
+                                    if(path.notNil, {
+
+                                        window.close;
+
+                                        // If the path does not end with .mid, append it
+                                        if(path.endsWith(".mid").toLower.not, {
+                                            path = path ++ ".mid";
+                                        });
+
+                                        // Export as MIDI
+                                        pcontrol.exportAsMidi(path, tempoBPM: bpm.asFloat, dur: duration.asFloat);
+                                    }, {
+                                        "Export cancelled".postln;
+                                    });
+                                });
+                            }, {
+                                "Export cancelled".postln;
+                            });
+                        })
+                    });
+
+                    window.layout = VLayout.new(
+                        HLayout.new(bpmLabel, bpmBox),
+                        HLayout.new(durationLabel, durationBox),
+                        HLayout.new(exportButton)
+                    );
+
+                    window.front;
+
+
+                });
+            },
+            2, {
+                // Load presets
+                Dialog.openPanel({ |path|
+                    pcontrol.loadPresetsFromFile(path);
+                    this.updatePresetPopup();
+                });
+            },
+            3, {
+                // Save presets
+                Dialog.savePanel({ |path|
+                    pcontrol.savePresetsToFile(path);
+                    this.updatePresetPopup();
+                });
+            }
+        );
 
         // === PRESET SECTION ===
         presetPopup = PopUpMenu.new()
@@ -350,7 +432,7 @@ updateAllParamsFromPcontrol {
         .toolTip_("Select preset");
 
         savePresetNameInput = TextField.new()
-        .string_("preset_%".format(Date.localtime.stamp));
+        .string_(["lion", "tiger", "elephant", "giraffe", "rhinoceros", "gorilla", "chimpanzee", "wolf", "bear", "panda", "kangaroo", "koala", "zebra", "hippopotamus", "monkey", "dog", "cat", "cow", "sheep", "horse", "pig", "rabbit", "donkey", "goat", "deer", "camel", "fox", "leopard", "cheetah", "buffalo", "bison", "walrus", "otter", "squirrel", "beaver", "moose", "antelope", "badger", "weasel", "ferret", "mink", "porcupine", "armadillo", "anteater", "wolverine", "elk", "reindeer", "caribou", "lynx", "bobcat", "puma", "cougar", "mountain", "wildcat"].choose ++ rrand(0, 100).asString);
 
         savePresetButton = Button.new()
         .states_([["Save"]])
@@ -406,24 +488,24 @@ updateAllParamsFromPcontrol {
         .fixedWidth_(40)
         .toolTip_("Interpolation time (seconds)");
 
-        loadPresetsButton = Button.new()
-        .states_([["Load file"]])
-        .action_({
-            Dialog.openPanel({ |path|
-                pcontrol.loadPresetsFromFile(path);
-                this.updatePresetPopup();
-            });
-        })
-        .toolTip_("Load presets from file");
+        // loadPresetsButton = Button.new()
+        // .states_([["Load file"]])
+        // .action_({
+        //     Dialog.openPanel({ |path|
+        //         pcontrol.loadPresetsFromFile(path);
+        //         this.updatePresetPopup();
+        //     });
+        // })
+        // .toolTip_("Load presets from file");
 
-        savePresetsButton = Button.new()
-        .states_([["Save file"]])
-        .action_({
-            Dialog.savePanel({ |path|
-                pcontrol.savePresetsToFile(path);
-            });
-        })
-        .toolTip_("Save all presets to file");
+        // savePresetsButton = Button.new()
+        // .states_([["Save file"]])
+        // .action_({
+        //     Dialog.savePanel({ |path|
+        //         pcontrol.savePresetsToFile(path);
+        //     });
+        // })
+        // .toolTip_("Save all presets to file");
 
         presetSection = VLayout(
             HLayout(
@@ -438,15 +520,15 @@ updateAllParamsFromPcontrol {
                 // interpolateButton,
                 // interpolationTimeBox
             ),
-            HLayout(
-                loadPresetsButton,
-                savePresetsButton
-            )
+            // HLayout(
+            //     loadPresetsButton,
+            //     savePresetsButton
+            // )
         );
 
         ^VLayout(
             HLayout(
-                play, clear, free, scope, send, popup
+                play, clear, randomize, /*free, scope, send, */popup
             ),
             presetSection
         )

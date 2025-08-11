@@ -394,4 +394,37 @@ Pcontrol [] {
             ^"Could not open file %".format(path).warn;
         };
     }
+
+    // MIDI
+    exportAsMidi{|file, dur, tempoBPM=120, maxEvents=10000000|
+        var pattern = this.patternProxy.source;
+        var midiFile;
+
+        if(dur.notNil, {
+            pattern = Pfindur.new(dur, pattern);
+        });
+
+        midiFile = SimpleMIDIFile.fromPattern(pattern: pattern, inTempo: tempoBPM,  maxEvents: maxEvents);
+
+        midiFile.write(file.asAbsolutePath);
+
+    }
+
+    randomize{|...paramKeys|
+        paramKeys.postln.asArray.do{|key|
+            if(params[key].notNil, {
+                params[key].randomize();
+                this.changed(key, [key, params[key].source]);
+
+            }, {
+                "%: param % not found".format(this.class.name, key).warn;
+            })
+        }
+    }
+
+    randomizeAll{
+        this.randomize(*params.keys.asArray);
+    }
+
+
 }
