@@ -411,7 +411,7 @@ Pcontrol [] {
     }
 
     randomize{|...paramKeys|
-        paramKeys.postln.asArray.do{|key|
+        paramKeys.asArray.do{|key|
             if(params[key].notNil, {
                 params[key].randomize();
                 this.changed(key, [key, params[key].source]);

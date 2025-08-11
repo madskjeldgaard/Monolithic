@@ -277,7 +277,9 @@ updateAllParamsFromPcontrol {
                 pcontrol.stop
             })
         })
-        .value_(pcontrol.isPlaying.binaryValue);
+        .value_(pcontrol.isPlaying.binaryValue)
+        .toolTip_("Play or stop the pattern");
+
 
         clear = Button.new()
         .states_(#[
@@ -285,15 +287,17 @@ updateAllParamsFromPcontrol {
         ])
         .action_({ | obj |
             pcontrol.patternProxy.clear;
-        });
+        })
+        .toolTip_("Clear the pattern");
 
         randomize = Button.new()
         .states_([
             ["randomize"]
         ])
         .action_({ | obj |
-            this.randomizeAll();
-        });
+            pcontrol.randomizeAll();
+        })
+        .toolTip_("Randomize all parameters");
 
 
         // send = Button.new()
@@ -417,7 +421,8 @@ updateAllParamsFromPcontrol {
                     this.updatePresetPopup();
                 });
             }
-        );
+        )
+        .toolTip_("Open file import/export menu");
 
         // === PRESET SECTION ===
         presetPopup = PopUpMenu.new()
@@ -453,7 +458,7 @@ updateAllParamsFromPcontrol {
                 pcontrol.recallPreset(presetPopup.items[presetPopup.value]);
             }
         })
-        .toolTip_("Recall selected preset");
+        .toolTip_("Recall/load selected preset");
 
         // deletePresetButton = Button.new()
         // .states_([["Delete"]])
@@ -480,13 +485,13 @@ updateAllParamsFromPcontrol {
         // })
         // .toolTip_("Interpolate to selected preset");
 
-        interpolationTimeBox = NumberBox.new()
-        .value_(1.0)
-        .clipLo_(0.0)
-        .decimals_(2)
-        .step_(0.1)
-        .fixedWidth_(40)
-        .toolTip_("Interpolation time (seconds)");
+        // interpolationTimeBox = NumberBox.new()
+        // .value_(1.0)
+        // .clipLo_(0.0)
+        // .decimals_(2)
+        // .step_(0.1)
+        // .fixedWidth_(40)
+        // .toolTip_("Interpolation time (seconds)");
 
         // loadPresetsButton = Button.new()
         // .states_([["Load file"]])
@@ -595,34 +600,35 @@ updateAllParamsFromPcontrol {
                 var arrayChoices = spec.array;
                 var currentIndex = arrayChoices.indexOf(paramVal) ? 0;
                 var numChoices = arrayChoices.size;
+                var valueText = arrayChoices[currentIndex].asString;
 
-                valueDisplay = StaticText.new()
-                .string_(arrayChoices[currentIndex].asString);
+                valueDisplay = TextField.new()
+                .string_(valueText);
 
-                // slider = Slider.new()
-                // .orientation_(\horizontal)
-                // .value_(currentIndex / (numChoices - 1).max(0))
-                // .step_(1/(numChoices-1))
-                // .action_({ |sl|
-                //     var index = (sl.value * (numChoices - 1)).round(1).asInteger;
-                //     var val = arrayChoices[index];
-                //     valueDisplay.string_(val.asString);
-                //     pcontrol.setRawOne(key, val);
-                // });
-
-                slider = ListView()
-                .items_(arrayChoices.collect{ | item | item.asString })
-                .value_(currentIndex)
-                .action_({ | lv |
-                    var index = lv.value;
+                slider = Slider.new()
+                .orientation_(\horizontal)
+                .value_(currentIndex / (numChoices - 1).max(0))
+                .step_(1/(numChoices-1))
+                .action_({ |sl|
+                    var index = (sl.value * (numChoices - 1)).round(1).asInteger;
                     var val = arrayChoices[index];
-                    // valueDisplay.string_(val.asString);
+                    valueDisplay.string_(val.asString);
                     pcontrol.setRawOne(key, val);
                 });
 
+                // slider = ListView()
+                // .items_(arrayChoices.collect{ | item | item.asString })
+                // .value_(currentIndex)
+                // .action_({ | lv |
+                //     var index = lv.value;
+                //     var val = arrayChoices[index];
+                //     // valueDisplay.string_(val.asString);
+                //     pcontrol.setRawOne(key, val);
+                // });
+
                 paramViews.put(key, (type: \array, slider: slider, display: valueDisplay));
 
-                // layout.add(valueDisplay, 1);
+                layout.add(valueDisplay, 1);
                 layout.add(slider, 4);
             }
             // For regular number parameters

@@ -1,15 +1,11 @@
 + Spec{
     randomValue{
-        var min = this.minval;
-        var max = this.maxval;
-        ^rrand(min, max);
+        ^this.map(rrand(0.0, 1.0));
     }
 }
 
 + ArrayedSpec {
     randomValue{
-        var min = this.minval;
-        var max = this.maxval;
-        ^rrand(min, max);
+        ^this.map(rrand(0.0, 1.0));
     }
 }
