@@ -76,43 +76,14 @@ Pparam : PatternProxy{
         ^spec.unmap(this.source);
     }
 
-    // Convenience method to make it super easy to map a MKtl / modality toolkit element to control this parameter
-    mktlAction{|verbose=true, prefix|
-        ^{|elem|
-            var value = elem.value;
 
-            verbose.if({
-                "% %".format(prefix ? this.class.name, value).postln;
-            });
-
-            this.map(value);
-        }
-    }
-
-    // Set a modality elements callback action to control this parameter and sync values between the parameter and the element
-    connectMKtlElement{|elem, syncValue=\param2elem, prefix, verbose=true|
-
-        // Sync values between the parameter and the element on your controller
-        syncValue.switch(
-            \param2elem, {
-                var normalizedParamValue = this.getUnmapped;
-                // var deviceSpec = elem.deviceSpec;
-                // var mappedValue = deviceSpec.map(normalizedParamValue);
-                // "Raw value: %".format(this.source).postln;
-                // "Normalized value: %".format(normalizedParamValue).postln;
-                // "Device spec: %".format(deviceSpec).postln;
-                // "Mapped value: %".format(mappedValue).postln;
-
-                // elem.valueAction = mappedValue;
-                elem.valueAction = normalizedParamValue;
-            },
-            \elem2param, {
-                this.map(elem.value);
-            }
-        );
-
-        // Map callback to the element
-        elem.action = this.mktlAction(verbose: verbose, prefix: prefix);
+    randomize{
+        if(spec.notNil, {
+            this.source = spec.randomValue;
+        }, {
+            "No spec found for %. Using unipolar".format(this.class.name).warn;
+            this.source = \uni.asSpec.randomValue;
+        });
     }
 
 }
