@@ -251,9 +251,11 @@ updateAllParamsFromPcontrol {
 		};
 		updateInfoFunc.value(pcontrol);
 
-		if(pcontrol.class.name.notNil, {
-			header = StaticText.new().string_(pcontrol.class.name)
-		});
+        if(pcontrol.class == Pctrldef, {
+            header = StaticText.new().string_(pcontrol.key)
+        }, {
+            header = StaticText.new().string_(pcontrol.class.name)
+        })
 
 		^VLayout.new(
 			header,
