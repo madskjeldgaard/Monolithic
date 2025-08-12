@@ -8,22 +8,51 @@ Pbind(
     \dur, 0.125 * Pbinary([1,1,1,0,1,1,0,1,0,1,1,0], inf),
 ).play;
 
-
 */
-Pbinary{
 
-    *new{|list, repeats=inf|
-        ^super.new.init(list, repeats)
+Pbinary : Pattern {
+    var list, repeats, offset;
+
+    *new { |list, repeats=1, offset=0|
+        ^super.newCopyArgs(list, repeats, offset)
     }
 
-    init{|list, repeats|
+    embedInStream { |inval|
+        var item, offsetValue = offset.value(inval);
+        var remainingRepeats = repeats.value(inval);
+        var isKindOfArray = list.isKindOf(Array);
+        var isKindOfPattern = list.isKindOf(Pattern);
 
-        // Convert all 0 to Rest
-        list = list.collect{|val| if(val.asInteger == 0, {Rest()}, {val})}
+        if(isKindOfArray, {
+            remainingRepeats.do { |j|
+                list.size.do { |i|
+                    item = list.wrapAt(i + offsetValue);
 
-        ^Pseq(list, repeats);
+                    item = this.prConvert(item);
+
+                    if(item.notNil) {
+                        inval = item.yield;
+                    }
+                }
+            };
+        });
+
+        ^inval;
     }
 
+    storeArgs { ^[list, repeats, offset] }
+
+    prConvert{|in|
+        if(in.isKindOf(Number), {
+            if(in <= 0, {
+                ^Rest()
+            }, {
+                ^in
+            });
+        }, {
+            ^("Pbinary: Expected a Number, got " ++ in.class.name ++ ".").error;
+        })
+    }
 }
 
 PbinaryGate : Pn {
