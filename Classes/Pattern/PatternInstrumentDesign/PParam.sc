@@ -18,6 +18,10 @@ Pctrldef(\yo).map(\myArrayParam, 0.5);
 Pctrldef(\yo)[\myArrayParam].source.postln;
 )
 
+
+TODO:
+- When using a spec, the initial source value is not mapped to it. Should it be?
+
 */
 Pparam : PatternProxy{
     var <spec;
