@@ -292,3 +292,4 @@ TempoClockDef : TempoClockProx {
     *prox { |key|
         ^this.at(key) ?? { this.new(key) };
     }
+}
