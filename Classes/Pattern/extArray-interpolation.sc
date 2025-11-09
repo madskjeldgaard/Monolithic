@@ -3,7 +3,7 @@
 (
 var a = [1, \r, \r, \r, ];
 var b = [\r, 1, 1, 1];
-var strategy = \fromTop; // or fromBottom
+var strategy = \fromStart; // or fromEnd
 
 (0,0.125..1.0).do{|interp|
     var interpolated = a.diffInterp(contrastArray: b, interpolationAmount: interp, strategy: strategy);
@@ -12,7 +12,7 @@ var strategy = \fromTop; // or fromBottom
 )
 */
 + Array{
-    diffInterp { |contrastArray, interpolationAmount = 0.0, strategy = \fromTop|
+    diffInterp { |contrastArray, interpolationAmount = 0.0, strategy = \fromStart|
         var mainArray = this;
         var result, differences, indices, numToReplace;
 
@@ -39,10 +39,10 @@ var strategy = \fromTop; // or fromBottom
         if (differences.isEmpty, { ^mainArray });
 
         // Determine which indices to replace based on strategy
-        case { strategy == \fromTop } {
+        case { strategy == \fromStart } {
             indices = differences.sort;
         }
-        { strategy == \fromBottom } {
+        { strategy == \fromEnd } {
             indices = differences.sort.reverse;
         }
         // { strategy == \fromMiddle } {
