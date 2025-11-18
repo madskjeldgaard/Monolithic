@@ -8,7 +8,8 @@
       "https://github.com/supercollider-quarks/wslib",
       "https://github.com/n-armstrong/fosc",
       "https://github.com/madskjeldgaard/PolyBuf",
-      "https://github.com/scztt/Singleton.quark"
+      "https://github.com/scztt/Singleton.quark",
+      "https://github.com/davidgranstrom/Pxshuf"
   ],
   license: "GNU GPL v3.0",
   copyright: "madskjeldgaard",
