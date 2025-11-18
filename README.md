@@ -5,4 +5,4 @@
 ## Installation
 
 Open up SuperCollider and evaluate the following line of code:
-`Quarks.install("https://github.com/madskjeldgaard/Monolithic")`
+`Quarks.install("https://codeberg.org/madskjeldgaard/Monolithic")`
